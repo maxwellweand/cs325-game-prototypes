@@ -8,9 +8,9 @@ var GameState = function (game) {
 
 // Load images and sounds
 GameState.prototype.preload = function () {
-    this.game.load.image('bullet', '/assets/bullet.png');
-    this.game.load.image('ground', '/assets/ground.png');
-    this.game.load.spritesheet('explosion', '/assets/explosion.png', 128, 128);
+    this.game.load.image('bullet', 'assets/bullet.png');
+    this.game.load.image('ground', 'assets/ground.png');
+    this.game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128);
 };
 
 // Setup the example
@@ -24,7 +24,7 @@ GameState.prototype.create = function () {
     this.NUMBER_OF_BULLETS = 20;
     this.GRAVITY = 980; // pixels/second/second
 
-    // Create an object representing our gun
+    // Create an gun representing
     this.gun = this.game.add.sprite(50, this.game.height - 64, 'bullet');
 
     // Set the pivot point to the center of the gun
@@ -89,10 +89,7 @@ GameState.prototype.shootBullet = function () {
     // This makes the bullet "alive"
     bullet.revive();
 
-    // Bullets should kill themselves when they leave the world.
-    // Phaser takes care of this for me by setting this flag
-    // but you can do it yourself by killing the bullet if
-    // its x,y coordinates are outside of the world.
+    // Bullets should kill themselves when they leave the screen.
     bullet.checkWorldBounds = true;
     bullet.outOfBoundsKill = true;
 
@@ -100,12 +97,12 @@ GameState.prototype.shootBullet = function () {
     bullet.reset(this.gun.x, this.gun.y);
     bullet.rotation = this.gun.rotation;
 
-    // Shoot it in the right direction
+    // Shoot it in the correct direction
     bullet.body.velocity.x = Math.cos(bullet.rotation) * this.BULLET_SPEED;
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
 
-// The update() method is called every frame
+// update() method is called every frame
 GameState.prototype.update = function () {
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function (bullet, ground) {
@@ -122,7 +119,6 @@ GameState.prototype.update = function () {
     }, this);
 
     // Aim the gun at the pointer.
-    // All this function does is calculate the angle using
     // Math.atan2(yPointer-yGun, xPointer-xGun)
     this.gun.rotation = this.game.physics.arcade.angleToPointer(this.gun);
 
