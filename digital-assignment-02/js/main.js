@@ -13,19 +13,24 @@ window.onload = function() {
     var game = new Phaser.Game( 800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
     
     function preload() {
-        // Load an image and call it 'logo'.
-        this.game.load.image( 'logo', 'assets/phaser.png' );
-        this.game.load.image( 'player1', 'assets/p1.png' );
-        this.game.load.image( 'player2', 'assets/p2.png' );
-        this.game.load.image( 'p1shot', 'assets/shot_1.png' );
-        this.game.load.image( 'p2shot', 'assets/shot_2.png' );
+        game.load.image( 'player1', 'assets/p1.png' );
+        game.load.image( 'player2', 'assets/p2.png' );
+        game.load.spritesheet('p1shot', 'assets/shot_1a.png', 64, 256);
+        game.load.spritesheet('p2shot', 'assets/shot_2a.png', 64, 256);
     }
     
     var bouncy;
     
     function create() {
         // Create a sprite at the center of the screen using the 'logo' image.
-        bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
+        bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'p1ayer1' );
+
+
+        //animation for sprite
+       // var animation = bouncy.animations.add('blueshot', [0, 1, 2, 3], 60, false);
+
+
+
         // Anchor the sprite at its center, as opposed to its top-left corner.
         // so it will be truly centered.
         bouncy.anchor.setTo( 0.5, 0.5 );
