@@ -35,9 +35,10 @@ window.onload = function () {
 
 
     // Movement & physics variables for fine tuning
-    var movementSpeed = 3;
-    var turnSpeed = 320;
-    var bulletVelocity = 500;
+    var movementSpeed = 5;
+    var turnSpeed = 190;
+    var bulletVelocity = 600;
+    var fireRate = 70;
 
 
     function create() {
@@ -188,11 +189,11 @@ window.onload = function () {
 
             if (bullet)
             {
-                bullet.reset(player.body.x + 16, player.body.y + 16);
+                bullet.reset(player.body.x + 22, player.body.y + 24);
                 bullet.lifespan = 2500;
                 bullet.rotation = player.rotation;
                 game.physics.arcade.velocityFromRotation(player.rotation, bulletVelocity, bullet.body.velocity);
-                bulletTime = game.time.now + 50;
+                bulletTime = game.time.now + fireRate;
             }
         }
     }
