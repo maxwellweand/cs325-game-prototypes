@@ -26,6 +26,10 @@ window.onload = function () {
     var p1Bullets;
     var p2Bullets;
 
+    var p1Input;
+    var p2Input;
+
+
     function create() {
         // Start arcade physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -51,23 +55,36 @@ window.onload = function () {
         //game.add.tileSprite(0, 0, game.width, game.height, 'space');
 
 
+        // Player 1 Bullets
+        p1Bullets = game.add.group();
+        p1Bullets.enableBody = true;
+        p1Bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
 
-
-
-
-
-
-
-
-
-
-
-        // Make it bounce off of the world bounds.
+        // Players confined to single screen
         player1.body.collideWorldBounds = true;
+        player2.body.collideWorldBounds = true;
 
 
-
+        //  Game input
+        p1Input = game.input.keyboard.addKeys({
+            'up': Phaser.KeyCode.W,
+            'down': Phaser.KeyCode.S,
+            'left': Phaser.KeyCode.A,
+            'right': Phaser.KeyCode.D,
+            'tiltLeft': Phaser.KeyCode.J,
+            'tiltRight': Phaser.KeyCode.L,
+            'fire': Phaser.KeyCode.K
+        });
+        p2Input = game.input.keyboard.addKeys({
+            'up': Phaser.KeyCode.UP,
+            'down': Phaser.KeyCode.DOWN,
+            'left': Phaser.KeyCode.LEFT,
+            'right': Phaser.KeyCode.RIGHT,
+            'tiltLeft': Phaser.KeyCode.NUMPAD_4,
+            'tiltRight': Phaser.KeyCode.NUMPAD_6,
+            'fire': Phaser.KeyCode.NUMPAD_5
+        });
 
 
         // Add some text using a CSS style.
