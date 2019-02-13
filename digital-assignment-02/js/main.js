@@ -15,9 +15,9 @@ window.onload = function () {
     function preload() {
         game.load.image('p1ship', 'assets/p1.png');
         game.load.image('p2ship', 'assets/p2.png');
-        game.load.spritesheet('p1shot', 'assets/shot_1a.png', 64, 256);
-        game.load.spritesheet('p2shot', 'assets/shot_2a.png', 64, 256);
-        //game.load.image('background', 'assets/bg.png')
+        game.load.spritesheet('p1shot', 'assets/shot_2a.png', 32, 32);
+        game.load.spritesheet('p2shot', 'assets/shot_2b.png', 32, 32);
+        game.load.image('background', 'assets/bg.jpg')
         // Other wall/tile assets here?
     }
 
@@ -26,13 +26,25 @@ window.onload = function () {
     var p1Bullets;
     var p2Bullets;
 
+
+    var bullet;
+    var bulletTime = 0;
+
     var p1Input;
     var p2Input;
+
+
+    // Movement & physics variables for fine tuning
+    var globalAngVelocity = 320;
+    var movementUnits = 3;
 
 
     function create() {
         // Start arcade physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        // Load background
+        game.add.tileSprite(0, 0, game.width, game.height, 'background');
 
         // Create player sprites
         player1 = game.add.sprite(game.world.centerX, game.world.centerY, 'p1ship');
@@ -43,22 +55,40 @@ window.onload = function () {
         // Enable & set player physics
         game.physics.enable(player1);
         game.physics.enable(player2);
-        player1.body.maxVelocity.set(250);
-        player2.body.maxVelocity.set(250);
+        //player1.body.maxVelocity.set(250);
+        //player2.body.maxVelocity.set(250);
 
 
         //animation for sprite
         //var animation = bouncy.animations.add('blueshot', [0, 1, 2, 3], 60, false);
 
 
-        // Load background
-        //game.add.tileSprite(0, 0, game.width, game.height, 'space');
+
 
 
         // Player 1 Bullets
         p1Bullets = game.add.group();
         p1Bullets.enableBody = true;
         p1Bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        p1Bullets.createMultiple(40, 'p1shot');
+        p1Bullets.setAll('anchor.x', 0.5);
+        p1Bullets.setAll('anchor.y', 0.5);
+        p1Bullets.callAll('animations.add', 'animations', 'travel', [0, 1, 2, 3, 4, 5, 6, 7], 60, true);
+        p1Bullets.callAll('play', null, 'travel');
+
+
+        // Player 2 Bullets
+        p2Bullets = game.add.group();
+        p2Bullets.enableBody = true;
+        p2Bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        p2Bullets.createMultiple(40, 'p2shot');
+        p2Bullets.setAll('anchor.x', 0.5);
+        p2Bullets.setAll('anchor.y', 0.5);
+        p2Bullets.callAll('animations.add', 'animations', 'travel', [0, 1, 2, 3, 4, 5, 6, 7], 60, true);
+        p2Bullets.callAll('play', null, 'travel');
+
+
+
 
 
         // Players confined to single screen
@@ -101,5 +131,69 @@ window.onload = function () {
         // This function returns the rotation angle that makes it visually match its
         // new trajectory.
         player1.rotation = game.physics.arcade.accelerateToPointer(player1, game.input.activePointer, 500, 500, 500);
+
+
+        // Movement
+        playerMovement(player1, p1Input);
+        playerMovement(player2, p2Input);
+
+        // Shooting
+        if (p1Input.fire.isDown){
+            fireBullet(player1, p1Bullets);
+        }
+        if (p2Input.fire.isDown){
+            fireBullet(player2, p2Bullets);
+        }
+
+
+
     }
+
+
+    // Handles keyboard input mapping for movement
+    function playerMovement(player, playerInput) {
+        if (playerInput.up.isDown) {
+            // Move the player absolute up
+            player.y -= movementUnits;
+        } else if (playerInput.down.isDown) {
+            // Move the player absolute down
+            player.y += movementUnits;
+        }
+
+        if (playerInput.left.isDown) {
+            // Move the player absolute left
+            player.x -= movementUnits;
+        } else if (playerInput.right.isDown) {
+            // Move the player absolute right
+            player.x += movementUnits;
+        }
+
+        // Tilt
+        if (playerInput.tiltLeft.isDown) {
+            // Rotate the player counterclockwise
+            player.body.angularVelocity = -(globalAngVelocity);
+        } else if (playerInput.tiltRight.isDown) {
+            // Rotate the player clockwise
+            player.body.angularVelocity = globalAngVelocity;
+        } else {
+            player.body.angularVelocity = 0;
+        }
+    }
+
+    function fireBullet(player, playerBullets){
+        if (game.time.now > bulletTime)
+        {
+            bullet = playerBullets.getFirstExists(false);
+
+            if (bullet)
+            {
+                bullet.reset(player.body.x + 16, player.body.y + 16);
+                bullet.lifespan = 2000;
+                bullet.rotation = player.rotation;
+                game.physics.arcade.velocityFromRotation(player.rotation, 400, bullet.body.velocity);
+                bulletTime = game.time.now + 50;
+            }
+        }
+    }
+
 };
