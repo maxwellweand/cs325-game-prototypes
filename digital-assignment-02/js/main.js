@@ -35,8 +35,9 @@ window.onload = function () {
 
 
     // Movement & physics variables for fine tuning
-    var globalAngVelocity = 320;
-    var movementUnits = 3;
+    var movementSpeed = 3;
+    var turnSpeed = 320;
+    var bulletVelocity = 500;
 
 
     function create() {
@@ -154,27 +155,27 @@ window.onload = function () {
     function playerMovement(player, playerInput) {
         if (playerInput.up.isDown) {
             // Move the player absolute up
-            player.y -= movementUnits;
+            player.y -= movementSpeed;
         } else if (playerInput.down.isDown) {
             // Move the player absolute down
-            player.y += movementUnits;
+            player.y += movementSpeed;
         }
 
         if (playerInput.left.isDown) {
             // Move the player absolute left
-            player.x -= movementUnits;
+            player.x -= movementSpeed;
         } else if (playerInput.right.isDown) {
             // Move the player absolute right
-            player.x += movementUnits;
+            player.x += movementSpeed;
         }
 
         // Tilt
         if (playerInput.tiltLeft.isDown) {
             // Rotate the player counterclockwise
-            player.body.angularVelocity = -(globalAngVelocity);
+            player.body.angularVelocity = -(turnSpeed);
         } else if (playerInput.tiltRight.isDown) {
             // Rotate the player clockwise
-            player.body.angularVelocity = globalAngVelocity;
+            player.body.angularVelocity = turnSpeed;
         } else {
             player.body.angularVelocity = 0;
         }
@@ -188,9 +189,9 @@ window.onload = function () {
             if (bullet)
             {
                 bullet.reset(player.body.x + 16, player.body.y + 16);
-                bullet.lifespan = 2000;
+                bullet.lifespan = 2500;
                 bullet.rotation = player.rotation;
-                game.physics.arcade.velocityFromRotation(player.rotation, 400, bullet.body.velocity);
+                game.physics.arcade.velocityFromRotation(player.rotation, bulletVelocity, bullet.body.velocity);
                 bulletTime = game.time.now + 50;
             }
         }
