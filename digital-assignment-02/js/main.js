@@ -154,7 +154,7 @@ window.onload = function () {
 
 
         // If players hit each other, hide controls
-        if (player1.health == 99 || player2.health == 99) {
+        if (player1.health == 49 || player2.health == 49) {
             p1Text.visible = false;
             p2Text.visible = false;
         }
