@@ -25,13 +25,14 @@ window.onload = function () {
     var player2;
     var p1Bullets;
     var p2Bullets;
-
-
-    var bullet;
-    var bulletTime = 0;
-
     var p1Input;
     var p2Input;
+    var p1HP;
+    var p2HP;
+
+    // Variables for bullet spawning
+    var bullet;
+    var bulletTime = 0;
 
 
     // Movement & physics variables for fine tuning
@@ -57,15 +58,6 @@ window.onload = function () {
         // Enable & set player physics
         game.physics.enable(player1);
         game.physics.enable(player2);
-        //player1.body.maxVelocity.set(250);
-        //player2.body.maxVelocity.set(250);
-
-
-        //animation for sprite
-        //var animation = bouncy.animations.add('blueshot', [0, 1, 2, 3], 60, false);
-
-
-
 
 
         // Player 1 Bullets
@@ -88,9 +80,6 @@ window.onload = function () {
         p2Bullets.setAll('anchor.y', 0.5);
         p2Bullets.callAll('animations.add', 'animations', 'travel', [0, 1, 2, 3, 4, 5, 6, 7], 60, true);
         p2Bullets.callAll('play', null, 'travel');
-
-
-
 
 
         // Players confined to single screen
@@ -132,7 +121,7 @@ window.onload = function () {
         // in X or Y.
         // This function returns the rotation angle that makes it visually match its
         // new trajectory.
-        player1.rotation = game.physics.arcade.accelerateToPointer(player1, game.input.activePointer, 500, 500, 500);
+        //player1.rotation = game.physics.arcade.accelerateToPointer(player1, game.input.activePointer, 500, 500, 500);
 
 
         // Movement
