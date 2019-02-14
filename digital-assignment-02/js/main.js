@@ -28,7 +28,7 @@ window.onload = function () {
     // Explosion FX
     var explosionFX;
 
-    // Variables for bullet spawning "
+    // Variables for bullet spawning
     var bullet;
     var p1BulletTime = 0;
     var p2BulletTime = 0;
