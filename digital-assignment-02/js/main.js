@@ -12,6 +12,7 @@ window.onload = function () {
         game.load.audio('explosion', 'assets/explosion.wav');
         game.load.spritesheet('p1explosion', 'assets/shot_1a.png', 64, 64);
         game.load.spritesheet('p2explosion', 'assets/shot_1b.png', 64, 64);
+        game.load.audio('bgm', 'assets/Jupiter.ogg');
     }
 
     var player1;
@@ -24,6 +25,9 @@ window.onload = function () {
     var p2Text;
     var p1HPText;
     var p2HPText;
+
+    // BGM
+    var music;
 
     // Explosion FX
     var explosionFX;
@@ -43,6 +47,10 @@ window.onload = function () {
     function create() {
         // Start arcade physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        // Play background music
+        music = game.add.audio('bgm');
+        music.play();
 
         // Load background
         game.add.tileSprite(0, 0, game.width, game.height, 'background');
