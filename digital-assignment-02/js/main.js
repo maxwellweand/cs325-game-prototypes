@@ -36,7 +36,7 @@ window.onload = function () {
 
 
     // Movement & physics variables for fine tuning
-    var movementSpeed = 5;
+    var movementSpeed = 260;
     var turnSpeed = 190;
     var bulletVelocity = 600;
     var fireRate = 70;
@@ -50,14 +50,45 @@ window.onload = function () {
         game.add.tileSprite(0, 0, game.width, game.height, 'background');
 
         // Create player sprites
-        player1 = game.add.sprite(game.world.centerX, game.world.centerY, 'p1ship');
-        player2 = game.add.sprite(game.world.centerX, game.world.centerY, 'p2ship');
+        player1 = game.add.sprite(game.world.centerX-150, game.world.centerY, 'p1ship');
+        player2 = game.add.sprite(game.world.centerX+150, game.world.centerY, 'p2ship');
+        player2.angle += 180;
         // Anchor player sprites at their center
         player1.anchor.setTo(0.5, 0.5);
         player2.anchor.setTo(0.5, 0.5);
         // Enable & set player physics
-        game.physics.enable(player1);
-        game.physics.enable(player2);
+        game.physics.enable(player1, Phaser.Physics.ARCADE);
+        game.physics.enable(player2, Phaser.Physics.ARCADE);
+
+        // Ship collision
+        player1.enableBody = true;
+        player2.enableBody = true;
+        player1.body.setSize(40,40);
+        player2.body.setSize(40,40);
+
+
+
+        /** DEBUG **/
+      //  game.physics.arcade.gravity.y = 200;
+
+        game.debug.body(player1);
+        game.debug.body(player2);
+
+      //  player1.body.bounce.y = 0.9;
+      //  player1.body.bounce.x = 0.9;
+      //  player2.body.bounce.y = 0.9;
+      //  player2.body.bounce.x = 0.9;
+
+
+
+
+
+
+
+        /** DEBUG **/
+
+
+
 
 
         // Player 1 Bullets
@@ -108,6 +139,22 @@ window.onload = function () {
         });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = {font: "20px Verdana", fill: "#9999ff", align: "center"};
@@ -116,14 +163,6 @@ window.onload = function () {
     }
 
     function update() {
-        // Accelerate the 'logo' sprite towards the cursor,
-        // accelerating at 500 pixels/second and moving no faster than 500 pixels/second
-        // in X or Y.
-        // This function returns the rotation angle that makes it visually match its
-        // new trajectory.
-        //player1.rotation = game.physics.arcade.accelerateToPointer(player1, game.input.activePointer, 500, 500, 500);
-
-
         // Movement
         playerMovement(player1, p1Input);
         playerMovement(player2, p2Input);
@@ -137,26 +176,39 @@ window.onload = function () {
         }
 
 
+        game.physics.arcade.collide(player1, player2, playerCollide);
+        game.physics.arcade.collide(player1, player2, playerCollide);
+        game.physics.arcade.collide(player1, player2, playerCollide);
+
 
     }
 
+    function playerCollide(){
+        var style = {font: "10px Verdana", fill: "#9999ff", align: "left"};
+        var text = game.add.text(game.world.centerX-300, 15, "player collide", style);
+        text.anchor.setTo(0.5, 0.0);
+    }
 
     // Handles keyboard input mapping for movement
     function playerMovement(player, playerInput) {
         if (playerInput.up.isDown) {
             // Move the player absolute up
-            player.y -= movementSpeed;
+            player.body.velocity.y = -(movementSpeed);
         } else if (playerInput.down.isDown) {
             // Move the player absolute down
-            player.y += movementSpeed;
+            player.body.velocity.y = movementSpeed;
+        } else {
+            player.body.velocity.y = player.body.velocity.y/2;
         }
 
         if (playerInput.left.isDown) {
             // Move the player absolute left
-            player.x -= movementSpeed;
+            player.body.velocity.x = -(movementSpeed);
         } else if (playerInput.right.isDown) {
             // Move the player absolute right
-            player.x += movementSpeed;
+            player.body.velocity.x = movementSpeed;
+        } else {
+            player.body.velocity.x = player.body.velocity.x/2;
         }
 
         // Tilt
@@ -169,6 +221,15 @@ window.onload = function () {
         } else {
             player.body.angularVelocity = 0;
         }
+
+
+
+
+
+
+
+
+
     }
 
     function fireBullet(player, playerBullets){
