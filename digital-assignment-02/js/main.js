@@ -8,7 +8,10 @@ window.onload = function () {
         game.load.image('p2ship', 'assets/p2.png');
         game.load.spritesheet('p1shot', 'assets/shot_2a.png', 32, 32);
         game.load.spritesheet('p2shot', 'assets/shot_2b.png', 32, 32);
-        game.load.image('background', 'assets/bg.jpg')
+        game.load.image('background', 'assets/bg.png')
+        game.load.audio('explosion', 'assets/explosion.wav');
+        game.load.spritesheet('p1explosion', 'assets/shot_1a.png', 64, 64);
+        game.load.spritesheet('p2explosion', 'assets/shot_1b.png', 64, 64);
     }
 
     var player1;
@@ -21,6 +24,9 @@ window.onload = function () {
     var p2Text;
     var p1HPText;
     var p2HPText;
+
+    // Explosion FX
+    var explosionFX;
 
     // Variables for bullet spawning
     var bullet;
@@ -40,6 +46,9 @@ window.onload = function () {
 
         // Load background
         game.add.tileSprite(0, 0, game.width, game.height, 'background');
+
+        // Explosion sound effect
+        explosionFX = game.add.audio('explosion');
 
         // Create player sprites
         player1 = game.add.sprite(game.world.centerX - 150, game.world.centerY, 'p1ship');
@@ -97,6 +106,7 @@ window.onload = function () {
         // Players confined to single screen
         player1.body.collideWorldBounds = true;
         player2.body.collideWorldBounds = true;
+
 
         //  Game input
         p1Input = game.input.keyboard.addKeys({
@@ -179,6 +189,11 @@ window.onload = function () {
 
         // Lower HP of hit player
         player.health -= 1;
+
+        // Play explosion SFX on death
+        if (player.health == 0){
+            explosionFX.play();
+        }
 
     }
 
