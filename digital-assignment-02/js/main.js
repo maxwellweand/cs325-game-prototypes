@@ -177,8 +177,8 @@ window.onload = function () {
 
 
         game.physics.arcade.collide(player1, player2, playerCollide);
-        game.physics.arcade.collide(player1, player2, playerCollide);
-        game.physics.arcade.collide(player1, player2, playerCollide);
+       // game.physics.arcade.collide(player1, player2, playerCollide);
+       // game.physics.arcade.collide(player1, player2, playerCollide);
 
 
     }
