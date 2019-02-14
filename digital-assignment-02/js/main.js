@@ -1,15 +1,6 @@
 "use strict";
 
 window.onload = function () {
-    // You can copy-and-paste the code from any of the examples at http://examples.phaser.io here.
-    // You will need to change the fourth parameter to "new Phaser.Game()" from
-    // 'phaser-example' to 'game', which is the id of the HTML element where we
-    // want the game to go.
-    // The assets (and code) can be found at: https://github.com/photonstorm/phaser/tree/master/examples/assets
-    // You will need to change the paths you pass to "game.load.image()" or any other
-    // loading functions to reflect where you are putting the assets.
-    // All loading functions will typically all be found inside "preload()".
-
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', {preload: preload, create: create, update: update});
 
     function preload() {
@@ -18,7 +9,6 @@ window.onload = function () {
         game.load.spritesheet('p1shot', 'assets/shot_2a.png', 32, 32);
         game.load.spritesheet('p2shot', 'assets/shot_2b.png', 32, 32);
         game.load.image('background', 'assets/bg.jpg')
-        // Other wall/tile assets here?
     }
 
     var player1;
@@ -29,6 +19,8 @@ window.onload = function () {
     var p2Input;
     var p1Text;
     var p2Text;
+    var p1HPText;
+    var p2HPText;
 
     // Variables for bullet spawning
     var bullet;
@@ -69,24 +61,10 @@ window.onload = function () {
         // Ship HP
         player1.setHealth(100);
         player2.setHealth(100);
-
-        //scoreString = 'Score : ';
-        //p1HP = game.add.text(10, 10, player1.Health.toString(), { font: '34px Arial', fill: '#fff' });
-
-
-        /** DEBUG **/
-        //  game.physics.arcade.gravity.y = 200;
-
-        //   game.debug.body(player1);
-        //   game.debug.body(player2);
-
-        //  player1.body.bounce.y = 0.9;
-        //  player1.body.bounce.x = 0.9;
-        //  player2.body.bounce.y = 0.9;
-        //  player2.body.bounce.x = 0.9;
-
-
-        /** DEBUG **/
+        p1HPText = game.add.text(40, 10, 100, {font: '84px Arial', fill: '#00ff00'});
+        p2HPText = game.add.text(650, 10, 100, {font: '84px Arial', fill: '#00ff00'});
+        p1HPText.alpha = 0.6;
+        p2HPText.alpha = 0.6;
 
         // Display controls
         var leftText = {font: "20px Verdana", fill: "#c3b6ff", align: "left"};
@@ -95,8 +73,6 @@ window.onload = function () {
         p2Text = game.add.text(game.world.centerX, game.world.centerY, "Arrows control movement\n4 5 6 control firing and rotation", rightText);
         p1Text.anchor.setTo(1.2, -3.5);
         p2Text.anchor.setTo(-0.2, -3.5);
-
-
 
         // Player 1 Bullets
         p1Bullets = game.add.group();
@@ -108,7 +84,6 @@ window.onload = function () {
         p1Bullets.callAll('animations.add', 'animations', 'travel', [0, 1, 2, 3, 4, 5, 6, 7], 60, true);
         p1Bullets.callAll('play', null, 'travel');
 
-
         // Player 2 Bullets
         p2Bullets = game.add.group();
         p2Bullets.enableBody = true;
@@ -119,11 +94,9 @@ window.onload = function () {
         p2Bullets.callAll('animations.add', 'animations', 'travel', [0, 1, 2, 3, 4, 5, 6, 7], 60, true);
         p2Bullets.callAll('play', null, 'travel');
 
-
         // Players confined to single screen
         player1.body.collideWorldBounds = true;
         player2.body.collideWorldBounds = true;
-
 
         //  Game input
         p1Input = game.input.keyboard.addKeys({
@@ -161,47 +134,43 @@ window.onload = function () {
         }
 
         // Collisions & damage
-        game.physics.arcade.collide(player1, player2, playerCollide);
+        game.physics.arcade.collide(player1, player2);
         game.physics.arcade.collide(player1, p2Bullets, bulletCollide);
         game.physics.arcade.collide(player2, p1Bullets, bulletCollide);
 
+        // Update HP counters
+        p1HPText.text = player1.health;
+        p2HPText.text = player2.health;
+
 
         // If players hit each other, hide controls
-       if (player1.health == 99 || player2.health == 99) {
-           p1Text.visible = false;
-           p2Text.visible = false;
-       }
+        if (player1.health == 99 || player2.health == 99) {
+            p1Text.visible = false;
+            p2Text.visible = false;
+        }
 
 
         // Check if HP is 0 for ending the game
         if (player1.health <= 0 || player2.health <= 0) {
 
-            player1.rotation = game.physics.arcade.accelerateToPointer( player1, game.input.activePointer, 500, 500, 500 );
-            player2.rotation = game.physics.arcade.accelerateToPointer( player2, game.input.activePointer, 500, 500, 500 );
+            player1.rotation = game.physics.arcade.accelerateToPointer(player1, game.input.activePointer, 500, 500, 500);
+            player2.rotation = game.physics.arcade.accelerateToPointer(player2, game.input.activePointer, 500, 500, 500);
 
             if (player1.health <= 0) {
                 player1.kill();
+                p1Bullets.kill();
                 var style = {font: "35px Verdana", fill: "#ff6f6b", align: "center"};
                 var text = game.add.text(game.world.centerX, game.world.centerY, "P2 Victory!", style);
-            }
-            else {
+            } else {
                 player2.kill();
+                p2Bullets.kill();
                 var style = {font: "35px Verdana", fill: "#c3b6ff", align: "center"};
                 var text = game.add.text(game.world.centerX, game.world.centerY, "P1 Victory!", style);
             }
-
             text.anchor.setTo(0.5, 0.5);
 
         }
 
-
-    }
-
-
-    function playerCollide() {
-        var style = {font: "10px Verdana", fill: "#9999ff", align: "left"};
-        var text = game.add.text(game.world.centerX - 300, 15, "player collide", style);
-        text.anchor.setTo(0.5, 0.0);
     }
 
     function bulletCollide(player, bullet) {
@@ -210,6 +179,7 @@ window.onload = function () {
 
         // Lower HP of hit player
         player.health -= 1;
+
     }
 
     // Handles keyboard input mapping for movement
