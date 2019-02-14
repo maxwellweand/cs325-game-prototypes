@@ -71,8 +71,8 @@ window.onload = function () {
         /** DEBUG **/
       //  game.physics.arcade.gravity.y = 200;
 
-        game.debug.body(player1);
-        game.debug.body(player2);
+     //   game.debug.body(player1);
+     //   game.debug.body(player2);
 
       //  player1.body.bounce.y = 0.9;
       //  player1.body.bounce.x = 0.9;
