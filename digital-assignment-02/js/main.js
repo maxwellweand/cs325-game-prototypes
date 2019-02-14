@@ -35,9 +35,9 @@ window.onload = function () {
 
     // Movement & physics variables for fine tuning
     var movementSpeed = 260;
-    var turnSpeed = 190;
-    var bulletVelocity = 600;
-    var fireRate = 70;
+    var turnSpeed = 210;
+    var bulletVelocity = 800;
+    var fireRate = 140;
 
 
     function create() {
@@ -68,8 +68,8 @@ window.onload = function () {
         player2.body.setSize(40, 40);
 
         // Ship HP
-        player1.setHealth(100);
-        player2.setHealth(100);
+        player1.setHealth(50);
+        player2.setHealth(50);
         p1HPText = game.add.text(40, 10, 100, {font: '84px Arial', fill: '#00ff00'});
         p2HPText = game.add.text(650, 10, 100, {font: '84px Arial', fill: '#00ff00'});
         p1HPText.alpha = 0.6;
