@@ -24,8 +24,8 @@ window.onload = function () {
 
     // Variables for bullet spawning
     var bullet;
-    var bulletTime = 0;
-
+    var p1BulletTime = 0;
+    var p2BulletTime = 0;
 
     // Movement & physics variables for fine tuning
     var movementSpeed = 260;
@@ -127,10 +127,10 @@ window.onload = function () {
 
         // Shooting
         if (p1Input.fire.isDown) {
-            fireBullet(player1, p1Bullets);
+            fireBulletP1();
         }
         if (p2Input.fire.isDown) {
-            fireBullet(player2, p2Bullets);
+            fireBulletP2();
         }
 
         // Collisions & damage
@@ -218,16 +218,30 @@ window.onload = function () {
 
     }
 
-    function fireBullet(player, playerBullets) {
-        if (game.time.now > bulletTime) {
-            bullet = playerBullets.getFirstExists(false);
+    function fireBulletP1() {
+        if (game.time.now > p1BulletTime) {
+            bullet = p1Bullets.getFirstExists(false);
 
             if (bullet) {
-                bullet.reset(player.body.x + 22, player.body.y + 24);
+                bullet.reset(player1.body.x + 22, player1.body.y + 24);
                 bullet.lifespan = 2500;
-                bullet.rotation = player.rotation;
-                game.physics.arcade.velocityFromRotation(player.rotation, bulletVelocity, bullet.body.velocity);
-                bulletTime = game.time.now + fireRate;
+                bullet.rotation = player1.rotation;
+                game.physics.arcade.velocityFromRotation(player1.rotation, bulletVelocity, bullet.body.velocity);
+                p1BulletTime = game.time.now + fireRate;
+                }
+            }
+    }
+
+    function fireBulletP2() {
+        if (game.time.now > p2BulletTime) {
+            bullet = p2Bullets.getFirstExists(false);
+
+            if (bullet) {
+                bullet.reset(player2.body.x + 22, player2.body.y + 24);
+                bullet.lifespan = 2500;
+                bullet.rotation = player2.rotation;
+                game.physics.arcade.velocityFromRotation(player2.rotation, bulletVelocity, bullet.body.velocity);
+                p2BulletTime = game.time.now + fireRate;
             }
         }
     }
