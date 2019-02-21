@@ -8,7 +8,11 @@ window.onload = function () {
         game.load.image('p2ship', 'assets/p2.png');
         game.load.spritesheet('p1shot', 'assets/shot_2a.png', 32, 32);
         game.load.spritesheet('p2shot', 'assets/shot_2b.png', 32, 32);
-        game.load.image('background', 'assets/bg.jpg')
+        game.load.image('background', 'assets/bg.png')
+        game.load.audio('explosion', 'assets/explosion.wav');
+        game.load.spritesheet('p1explosion', 'assets/shot_1a.png', 64, 64);
+        game.load.spritesheet('p2explosion', 'assets/shot_1b.png', 64, 64);
+        game.load.audio('bgm', 'assets/Jupiter.ogg');
     }
 
     var player1;
@@ -22,6 +26,12 @@ window.onload = function () {
     var p1HPText;
     var p2HPText;
 
+    // BGM
+    var music;
+
+    // Explosion FX
+    var explosionFX;
+
     // Variables for bullet spawning
     var bullet;
     var p1BulletTime = 0;
@@ -29,17 +39,24 @@ window.onload = function () {
 
     // Movement & physics variables for fine tuning
     var movementSpeed = 260;
-    var turnSpeed = 190;
-    var bulletVelocity = 600;
-    var fireRate = 70;
+    var turnSpeed = 210;
+    var bulletVelocity = 800;
+    var fireRate = 140;
 
 
     function create() {
         // Start arcade physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        // Play background music
+        music = game.add.audio('bgm');
+        music.play();
+
         // Load background
         game.add.tileSprite(0, 0, game.width, game.height, 'background');
+
+        // Explosion sound effect
+        explosionFX = game.add.audio('explosion');
 
         // Create player sprites
         player1 = game.add.sprite(game.world.centerX - 150, game.world.centerY, 'p1ship');
@@ -59,8 +76,8 @@ window.onload = function () {
         player2.body.setSize(40, 40);
 
         // Ship HP
-        player1.setHealth(100);
-        player2.setHealth(100);
+        player1.setHealth(50);
+        player2.setHealth(50);
         p1HPText = game.add.text(40, 10, 100, {font: '84px Arial', fill: '#00ff00'});
         p2HPText = game.add.text(650, 10, 100, {font: '84px Arial', fill: '#00ff00'});
         p1HPText.alpha = 0.6;
@@ -97,6 +114,7 @@ window.onload = function () {
         // Players confined to single screen
         player1.body.collideWorldBounds = true;
         player2.body.collideWorldBounds = true;
+
 
         //  Game input
         p1Input = game.input.keyboard.addKeys({
@@ -144,7 +162,7 @@ window.onload = function () {
 
 
         // If players hit each other, hide controls
-        if (player1.health == 99 || player2.health == 99) {
+        if (player1.health == 49 || player2.health == 49) {
             p1Text.visible = false;
             p2Text.visible = false;
         }
@@ -179,6 +197,11 @@ window.onload = function () {
 
         // Lower HP of hit player
         player.health -= 1;
+
+        // Play explosion SFX on death
+        if (player.health == 0){
+            explosionFX.play();
+        }
 
     }
 
