@@ -1,0 +1,28 @@
+{"frames": [
+
+{
+	"filename": "down",
+	"frame": {"x":0,"y":180,"w":200,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":90},
+	"sourceSize": {"w":200,"h":90}
+},
+{
+	"filename": "over",
+	"frame": {"x":0,"y":90,"w":200,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":90},
+	"sourceSize": {"w":200,"h":90}
+},
+{
+	"filename": "out",
+	"frame": {"x":0,"y":0,"w":200,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":200,"h":90},
+	"sourceSize": {"w":200,"h":90}
+}]
+
+}
