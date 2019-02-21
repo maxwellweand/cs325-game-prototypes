@@ -62,6 +62,11 @@ function sealCollide() {
     }
 }
 
+function rosefishCollision2(sealgf, rosefish) {
+  sealgf.body.bounce.y = 1.01;
+  sealgf.body.bounce.x = 1.01;
+}
+
 BasicGame.Game.prototype = {
 
     create: function () {
@@ -102,7 +107,7 @@ BasicGame.Game.prototype = {
         this.game.physics.enable(this.iceblock04);
         this.iceblock04.body.immovable = true;
 
-        this.iceblock05 = this.game.add.sprite(462, 64, 'iceblock', 0);
+        this.iceblock05 = this.game.add.sprite(454, 64, 'iceblock', 0);
         this.game.physics.enable(this.iceblock05);
         this.iceblock05.body.immovable = true;
 
@@ -195,7 +200,9 @@ BasicGame.Game.prototype = {
 
         // Make it bounce off of the world bounds.
         this.bouncy.body.collideWorldBounds = true;
-
+        this.sealgf.body.collideWorldBounds = true;
+        this.sealgf.body.bounce.y = 0.9;
+        this.sealgf.body.bounce.x = 0.9;
 
 
 
@@ -292,7 +299,31 @@ BasicGame.Game.prototype = {
         this.game.physics.arcade.collide(this.bouncy, this.rosefish, rosefishCollision);
         this.game.physics.arcade.collide(this.bouncy, this.sealgf, sealCollide);
 
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock01);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock02);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock03);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock04);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock05);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock06);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock07);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock08);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock09);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock10);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock11);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock12);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock13);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock14);
+        this.game.physics.arcade.collide(this.sealgf, this.iceblock15);
 
+        this.game.physics.arcade.collide(this.sealgf, this.rosefish, rosefishCollision2);
+
+
+        if (this.sealgf.body.bounce.y >= 1.0){
+            var style = { font: "55px Verdana", fill: "#ff0015", align: "center" };
+            var text = this.game.add.text( this.game.world.centerX, this.game.world.centerY-40, "WHAT A GENTLEMAN!!!", style );
+            text.anchor.setTo( 0.5, 0.0 );
+
+        }
     },
 
     quitGame: function () {
