@@ -25,7 +25,7 @@ BasicGame.MainMenu.prototype = {
 
 
 
-		var style = { font: "25px Verdana", fill: "#9999ff", align: "center" };
+		var style = { font: "25px Verdana", fill: "#ff172f", align: "center" };
 		var text = this.game.add.text( this.game.world.centerX, 15, "Bring the rosefish to ur girlfriend seal.", style );
 		text.anchor.setTo( 0.5, 0.0 );
 

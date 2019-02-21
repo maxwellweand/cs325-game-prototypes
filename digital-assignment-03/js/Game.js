@@ -57,8 +57,9 @@ function rosefishCollision(player, rosefish) {
 }
 
 function sealCollide() {
-    //this.music.stop();
-    this.state.start('MainMenu');
+    if (this.redfish == true){
+        this.quitGame();
+    }
 }
 
 BasicGame.Game.prototype = {
