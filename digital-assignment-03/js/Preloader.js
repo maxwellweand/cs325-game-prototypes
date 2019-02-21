@@ -16,7 +16,8 @@ BasicGame.Preloader.prototype = {
 		//	These are the assets we loaded in Boot.js
 		//	A nice sparkly background and a loading progress bar
 		this.background = this.add.sprite(0, 0, 'loadScreen');
-
+		this.background.height = this.game.height;
+		this.background.width = this.game.width;
 		//	This sets the preloadBar sprite as a loader sprite.
 		//	What that does is automatically crop the sprite from 0 to full-width
 		//	as the files below are loaded in.
@@ -28,7 +29,30 @@ BasicGame.Preloader.prototype = {
 		this.load.atlas('playButton', 'assets/rosefish_button.png', 'assets/fish_button.json');
 		this.load.audio('titleMusic', ['assets/icegitar.wav']);
 		//	+ lots of other required assets here
-        this.load.image( 'logo', 'assets/phaser.png' );
+
+		this.load.spritesheet('explosion', 'assets/exp2_0.png', 64, 64);
+		this.load.spritesheet('seal_anim', 'assets/seal_anim.png', 64, 64);
+		this.load.image('rosefish', 'assets/rosefish64.png');
+		this.load.tilemap('map', 'assets/map.csv', null, Phaser.Tilemap.CSV);
+		this.load.image('tiles', 'assets/tiles64.png');
+		this.load.image('icebg', 'assets/icebg.jpg');
+
+		this.load.spritesheet('iceblock', 'assets/iceblock64.png', 64, 64);
+
+		this.load.image('seal', 'assets/seal.png');
+
+		var map;
+		var layer;
+		var player;
+		var input;
+
+
+		var movementSpeed = 260;
+
+
+
+
+
 	},
 
 	create: function () {
