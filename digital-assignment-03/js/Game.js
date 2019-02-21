@@ -43,7 +43,23 @@ BasicGame.Game = function (game) {
     this.iceblock13 = null;
     this.iceblock14 = null;
     this.iceblock15 = null;
+    this.redfish = false;
+    this.rosefish = null;
+    this.sealgf = null;
+
 };
+
+function rosefishCollision(player, rosefish) {
+    this.redfish = true;
+    rosefish.kill();
+
+
+}
+
+function sealCollide() {
+    //this.music.stop();
+    this.state.start('MainMenu');
+}
 
 BasicGame.Game.prototype = {
 
@@ -81,11 +97,11 @@ BasicGame.Game.prototype = {
         this.game.physics.enable(this.iceblock03);
         this.iceblock03.body.immovable = true;
 
-        this.iceblock04 = this.game.add.sprite(64, 64, 'iceblock', 0);
+        this.iceblock04 = this.game.add.sprite(64, 64, 'iceblock', 1);
         this.game.physics.enable(this.iceblock04);
         this.iceblock04.body.immovable = true;
 
-        this.iceblock05 = this.game.add.sprite(512, 64, 'iceblock', 0);
+        this.iceblock05 = this.game.add.sprite(462, 64, 'iceblock', 0);
         this.game.physics.enable(this.iceblock05);
         this.iceblock05.body.immovable = true;
 
@@ -97,7 +113,7 @@ BasicGame.Game.prototype = {
         this.game.physics.enable(this.iceblock07);
         this.iceblock07.body.immovable = true;
 
-        this.iceblock08 = this.game.add.sprite(590, 182, 'iceblock', 0);
+        this.iceblock08 = this.game.add.sprite(590, 182, 'iceblock', 1);
         this.game.physics.enable(this.iceblock08);
         this.iceblock08.body.immovable = true;
 
@@ -129,6 +145,26 @@ BasicGame.Game.prototype = {
         this.game.physics.enable(this.iceblock15);
         this.iceblock15.body.immovable = true;
 
+
+
+
+
+
+
+
+
+
+
+
+
+        this.rosefish = this.game.add.sprite(488, 20, 'rosefish');
+        this.game.physics.enable(this.rosefish);
+        this.rosefish.enableBody = true;
+
+
+        this.sealgf = this.game.add.sprite(6, 550, 'sealgf');
+        this.game.physics.enable(this.sealgf);
+        this.sealgf.enableBody = true;
 
 
 
@@ -191,8 +227,8 @@ BasicGame.Game.prototype = {
 
 
         // When you click on the sprite, you go back to the MainMenu.
-        this.bouncy.inputEnabled = true;
-        this.bouncy.events.onInputDown.add( function() { this.quitGame(); }, this );
+       // this.bouncy.inputEnabled = true;
+        //this.bouncy.events.onInputDown.add( function() { this.quitGame(); }, this );
     },
 
     update: function () {
@@ -244,6 +280,10 @@ BasicGame.Game.prototype = {
         this.game.physics.arcade.collide(this.bouncy, this.iceblock13);
         this.game.physics.arcade.collide(this.bouncy, this.iceblock14);
         this.game.physics.arcade.collide(this.bouncy, this.iceblock15);
+
+
+        this.game.physics.arcade.collide(this.bouncy, this.rosefish, rosefishCollision);
+        this.game.physics.arcade.collide(this.bouncy, this.sealgf, sealCollide);
 
 
     },

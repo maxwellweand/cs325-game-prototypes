@@ -36,6 +36,7 @@ BasicGame.Preloader.prototype = {
 		this.load.tilemap('map', 'assets/map.csv', null, Phaser.Tilemap.CSV);
 		this.load.image('tiles', 'assets/tiles64.png');
 		this.load.image('icebg', 'assets/icebg.jpg');
+		this.load.image('sealgf', 'assets/sealgf.png');
 
 		this.load.spritesheet('iceblock', 'assets/iceblock64.png', 64, 64);
 
@@ -45,9 +46,10 @@ BasicGame.Preloader.prototype = {
 		var layer;
 		var player;
 		var input;
+		var redfish;
 
 
-		var movementSpeed = 260;
+		//var movementSpeed = 260;
 
 
 
