@@ -182,7 +182,7 @@ BasicGame.Game.prototype = {
         //this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'seal');
 
         // Create a sprite at the center of the screen using the 'logo' image.
-        this.bouncy = this.game.add.sprite( 384, this.game.height - (24+32), 'seal' );
+        this.bouncy = this.game.add.sprite( 384, this.game.height - (24+32), 'seal_anim', 1 );
         // Anchor the sprite at its center, as opposed to its top-left corner.
         // so it will be truly centered.
         this.bouncy.anchor.setTo( 0.5, 0.5 );
@@ -217,7 +217,7 @@ BasicGame.Game.prototype = {
 
 
 
-
+        this.bouncy.animations.add('move', [0,1], 10, true);
 
 
 
@@ -244,22 +244,28 @@ BasicGame.Game.prototype = {
         if (this.input.up.isDown) {
             // Move the player absolute up
             this.bouncy.angle = 0;
+            this.bouncy.play('move');
             if (this.bouncy.body.velocity.y == 0 && this.bouncy.body.velocity.x == 0) this.bouncy.body.velocity.y = -(movementSpeed);
 
         } else if (this.input.down.isDown) {
             // Move the player absolute down
             this.bouncy.angle = 180;
+            this.bouncy.play('move');
             if (this.bouncy.body.velocity.y == 0 && this.bouncy.body.velocity.x == 0) this.bouncy.body.velocity.y = movementSpeed;
 
         } else if (this.input.left.isDown) {
             // Move the player absolute left
             this.bouncy.angle = 270;
+            this.bouncy.play('move');
             if (this.bouncy.body.velocity.y == 0 && this.bouncy.body.velocity.x == 0) this.bouncy.body.velocity.x = -(movementSpeed);
 
         } else if (this.input.right.isDown) {
             // Move the player absolute right
             this.bouncy.angle = 90;
+            this.bouncy.play('move');
             if (this.bouncy.body.velocity.y == 0 && this.bouncy.body.velocity.x == 0) this.bouncy.body.velocity.x = movementSpeed;
+        } else {
+            this.bouncy.animations.stop();
         }
 
 
