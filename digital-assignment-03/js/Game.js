@@ -79,7 +79,6 @@ BasicGame.Game.prototype = {
         //this.map.setCollision(3);
         //this.map.setTileIndexCallback(0, gameOver, this);
         //this.map.setTileIndexCallback(1, gameOver, this);
-
         this.background = this.add.sprite(0, 0, 'icebg');
         this.background.height = this.game.height;
         this.background.width = this.game.width;
@@ -171,7 +170,7 @@ BasicGame.Game.prototype = {
         this.sealgf = this.game.add.sprite(6, 550, 'sealgf');
         this.game.physics.enable(this.sealgf);
         this.sealgf.enableBody = true;
-
+        this.sealgf.body.setSize(48,24,8,8);
 
 
 
@@ -246,7 +245,7 @@ BasicGame.Game.prototype = {
        // this.bouncy.rotation = this.game.physics.arcade.accelerateToPointer( this.bouncy, this.game.input.activePointer, 500, 500, 500 );
 
         // Movement
-        var movementSpeed = 100;
+        var movementSpeed = 300;
 
         if (this.input.up.isDown) {
             // Move the player absolute up
@@ -324,6 +323,12 @@ BasicGame.Game.prototype = {
             text.anchor.setTo( 0.5, 0.0 );
 
         }
+    },
+
+
+    render: function(){
+        //this.game.debug.body(this.sealgf);
+        //this.game.debug.body(this.bouncy);
     },
 
     quitGame: function () {
