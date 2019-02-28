@@ -245,7 +245,7 @@ BasicGame.Game.prototype = {
        // this.bouncy.rotation = this.game.physics.arcade.accelerateToPointer( this.bouncy, this.game.input.activePointer, 500, 500, 500 );
 
         // Movement
-        var movementSpeed = 300;
+        var movementSpeed = 100;
 
         if (this.input.up.isDown) {
             // Move the player absolute up
