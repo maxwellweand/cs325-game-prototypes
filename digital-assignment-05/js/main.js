@@ -28,7 +28,9 @@ window.onload = function() {
         game.load.spritesheet('mariachi1_anim', 'assets/guitar.png', 500, 500);
         game.load.spritesheet('mariachi2_anim', 'assets/violin2.png', 500, 500);
         game.load.spritesheet('mariachi3_anim', 'assets/trumpet.png', 500, 500);
-        game.load.audio('guitar', 'assets/gourmet.mp3');
+        game.load.audio('guitar', 'assets/guitar.mp3');
+        game.load.audio('violin', 'assets/violin.mp3');
+        game.load.audio('trumpet', 'assets/trumpet.mp3');
         game.load.audio('slurp', 'assets/slurp.wav');
 
 
@@ -59,6 +61,7 @@ window.onload = function() {
     var mariachi1;
     var mariachi2;
     var mariachi3;
+    var gourmet;
 
     // Player
     var marshmallow;
@@ -130,10 +133,6 @@ window.onload = function() {
         mariachi1.scale.setTo(.2,.2);
         mariachi2.scale.setTo(.2,.2);
         mariachi3.scale.setTo(.3,.2);
-        guitar = game.add.audio('guitar');
-        violin = game.add.audio('violin');
-        trumpet = game.add.audio('trumpet');
-
 
         game.physics.enable(mariachi1, Phaser.Physics.ARCADE);
         game.physics.enable(mariachi2, Phaser.Physics.ARCADE);
@@ -162,6 +161,15 @@ window.onload = function() {
         mariachi3.animations.add('play', [1,0,2, 0], 12, true);
 
 
+        // Audio stuff
+        guitar = game.add.audio('guitar');
+        violin = game.add.audio('violin');
+        trumpet = game.add.audio('trumpet');
+        gourmet = [ guitar, violin, trumpet];
+        game.sound.setDecodedCallback(gourmet, startMariachi, this);
+        guitar.mute = true;
+        violin.mute = true;
+        trumpet.mute = true;
 
 
         // Game Input
@@ -171,11 +179,6 @@ window.onload = function() {
             'left': Phaser.KeyCode.LEFT,
             'right': Phaser.KeyCode.RIGHT
         });
-
-
-
-
-
 
     }
     
@@ -195,9 +198,7 @@ window.onload = function() {
         game.physics.arcade.collide(marshmallow, mariachi2, collideViolin);
         game.physics.arcade.collide(marshmallow, mariachi3, collideTrumpet);
 
-
         if (glasses == 0 && filledGlasses == 3){
-            guitar.play();
             glasses = -1;
         }
 
@@ -215,6 +216,12 @@ window.onload = function() {
 
     }
 
+    // Starts Gourmet Race
+    function startMariachi(){
+        guitar.loopFull(1);
+        violin.loopFull(.8);
+        trumpet.loopFull(.8);
+    }
 
     // Handles keyboard input mapping for movement
     function playerMovement(player, playerInput) {
@@ -261,7 +268,7 @@ window.onload = function() {
     function collideGuitar(player, mariachi){
         if ((glasses > 0) && (mariachi.health <= 1)){
             hydrateMariachi(player, mariachi)
-            //guitar.play();
+            guitar.mute = false;
         }
 
     }
@@ -269,7 +276,7 @@ window.onload = function() {
     function collideViolin(player, mariachi){
         if ((glasses > 0) && (mariachi.health <= 1)){
             hydrateMariachi(player, mariachi)
-            //violin.play();
+            violin.mute = false;
         }
 
     }
@@ -277,7 +284,7 @@ window.onload = function() {
     function collideTrumpet(player, mariachi){
         if ((glasses > 0) && (mariachi.health <= 1)){
             hydrateMariachi(player, mariachi)
-            //trumpet.play();
+            trumpet.mute = false;
         }
 
     }
