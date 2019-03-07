@@ -85,7 +85,7 @@ window.onload = function() {
         layer1.resizeWorld();
 
         map.setCollision(8);
-        map.setCollisionBetween(10, 20, true, layer1);
+        map.setCollisionBetween(11, 20, true, layer1);
 
         bgm = game.add.audio('bgm');
         bgm.play();
