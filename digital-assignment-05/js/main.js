@@ -22,6 +22,7 @@ window.onload = function() {
         // load tiles for map
         game.load.image('tiles', 'assets/tileset.png');
 
+        game.load.audio('bgm', 'assets/construction.mp3');
 
         // Player
         game.load.spritesheet('marshmallow_anim', 'assets/marshmallow_anim_2.png', 160, 130);
@@ -37,9 +38,9 @@ window.onload = function() {
 
         // Mariachi Band
         game.load.spritesheet('mariachi1_anim', 'assets/guitar.png', 500, 500);
-        //game.load.spritesheet('mariachi2_anim', 'trumpet.png');
-        //game.load.spritesheet('mariachi3_anim', 'trumpet.png');
-        //game.load.audio('guitar', 'assets/gourmet.mp3');
+        game.load.spritesheet('mariachi2_anim', 'assets/violin2.png', 500, 500);
+        game.load.spritesheet('mariachi3_anim', 'assets/trumpet.png', 500, 500);
+        game.load.audio('guitar', 'assets/gourmet.mp3');
         game.load.audio('slurp', 'assets/slurp.wav');
 
 
@@ -58,6 +59,7 @@ window.onload = function() {
     var guitar;
     var trumpet;
     var violin;
+    var bgm;
 
     // Key Objects
     var glasses = 0;
@@ -94,6 +96,8 @@ window.onload = function() {
         map.setCollision(8);
         map.setCollisionBetween(10, 20, true, layer1);
 
+        bgm = game.add.audio('bgm');
+        bgm.play();
 
 
 
@@ -131,29 +135,34 @@ window.onload = function() {
 
 
         // Dehydrated Mariachi Band
+        mariachi2 = game.add.sprite( game.world.centerX+190, game.world.centerY-420, 'mariachi2_anim');
+        mariachi3 = game.add.sprite( game.world.centerX+80, game.world.centerY-430, 'mariachi3_anim');
         mariachi1 = game.add.sprite( game.world.centerX+140, game.world.centerY-400, 'mariachi1_anim');
-        //mariachi2 = game.add.sprite( game.world.centerX+140, game.world.centerY-450, 'mariachi2_anim');
-        //mariachi3 = game.add.sprite( game.world.centerX+60, game.world.centerY-450, 'mariachi3_anim');
-
 
         mariachi1.scale.setTo(.2,.2);
-        //
-        //
+        mariachi2.scale.setTo(.2,.2);
+        mariachi3.scale.setTo(.3,.2);
         guitar = game.add.audio('guitar');
-        //trumpet = game.add.audio('trumpet');
-        //violin = game.add.audio('violin');
+        violin = game.add.audio('violin');
+        trumpet = game.add.audio('trumpet');
+
 
         game.physics.enable(mariachi1, Phaser.Physics.ARCADE);
-        //game.physics.enable(mariachi2, Phaser.Physics.ARCADE);
-        //game.physics.enable(mariachi3, Phaser.Physics.ARCADE);
+        game.physics.enable(mariachi2, Phaser.Physics.ARCADE);
+        game.physics.enable(mariachi3, Phaser.Physics.ARCADE);
 
         mariachi1.body.setSize(250,300,100,200);
-
-
+        mariachi2.body.setSize(250,300,100,200);
+        mariachi3.body.setSize(250,300,100,200);
 
         mariachi1.body.immovable = true;
-        //mariachi2.body.immovable = true;
-        //mariachi3.body.immovable = true;
+        mariachi2.body.immovable = true;
+        mariachi3.body.immovable = true;
+
+        mariachi1.setHealth(1);
+        mariachi2.setHealth(1);
+        mariachi3.setHealth(1);
+
 
 
         slurp = game.add.audio('slurp');
@@ -161,8 +170,8 @@ window.onload = function() {
 
         // Mariachi animations
         mariachi1.animations.add('play', [1,2], 10, true);
-        //mariachi2.animations.add('play', [1,2], 10, true);
-        //mariachi3.animations.add('play', [1,2], 10, true);
+        mariachi2.animations.add('play', [1,2], 7, true);
+        mariachi3.animations.add('play', [1,0,2, 0], 12, true);
 
 
 
@@ -195,9 +204,14 @@ window.onload = function() {
         game.physics.arcade.collide(marshmallow, water3, waterCollect);
 
         game.physics.arcade.collide(marshmallow, mariachi1, collideGuitar);
+        game.physics.arcade.collide(marshmallow, mariachi2, collideViolin);
+        game.physics.arcade.collide(marshmallow, mariachi3, collideTrumpet);
 
 
-
+        if (glasses == 0 && filledGlasses == 3){
+            guitar.play();
+            glasses = -1;
+        }
 
 
 
@@ -257,14 +271,34 @@ window.onload = function() {
     }
 
     function collideGuitar(player, mariachi){
-        if (glasses > 0){
+        if ((glasses > 0) && (mariachi.health <= 1)){
             hydrateMariachi(player, mariachi)
-            guitar.play();
+            //guitar.play();
         }
 
     }
 
+    function collideViolin(player, mariachi){
+        if ((glasses > 0) && (mariachi.health <= 1)){
+            hydrateMariachi(player, mariachi)
+            //violin.play();
+        }
+
+    }
+
+    function collideTrumpet(player, mariachi){
+        if ((glasses > 0) && (mariachi.health <= 1)){
+            hydrateMariachi(player, mariachi)
+            //trumpet.play();
+        }
+
+    }
+
+
     function hydrateMariachi(player, mariachi){
+        // Increase health (used for completion tracking)
+        mariachi.health += 1;
+
         // Animate the Mariachi member
         mariachi.play('play');
 
