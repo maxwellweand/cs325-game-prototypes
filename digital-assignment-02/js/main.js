@@ -8,7 +8,7 @@ window.onload = function () {
         game.load.image('p2ship', 'assets/p2.png');
         game.load.spritesheet('p1shot', 'assets/shot_2a.png', 32, 32);
         game.load.spritesheet('p2shot', 'assets/shot_2b.png', 32, 32);
-        game.load.image('background', 'assets/bg.png')
+        game.load.image('background', 'assets/bg.png');
         game.load.audio('explosion', 'assets/explosion.wav');
         game.load.spritesheet('p1explosion', 'assets/shot_1a.png', 64, 64);
         game.load.spritesheet('p2explosion', 'assets/shot_1b.png', 64, 64);
