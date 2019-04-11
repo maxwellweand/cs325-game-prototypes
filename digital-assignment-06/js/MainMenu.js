@@ -55,6 +55,6 @@ GameStates.makeMainMenu = function( game, shared ) {
 
     function startMusic(){
         melody.loopFull(1);
-        beats.loopFull(1);
+        beats.loopFull(.8);
     }
 };
