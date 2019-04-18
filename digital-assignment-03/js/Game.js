@@ -53,7 +53,6 @@ function rosefishCollision(player, rosefish) {
     this.redfish = true;
     rosefish.kill();
 
-
 }
 
 function sealCollide() {
@@ -245,7 +244,7 @@ BasicGame.Game.prototype = {
        // this.bouncy.rotation = this.game.physics.arcade.accelerateToPointer( this.bouncy, this.game.input.activePointer, 500, 500, 500 );
 
         // Movement
-        var movementSpeed = 100;
+        var movementSpeed = 200;
 
         if (this.input.up.isDown) {
             // Move the player absolute up
