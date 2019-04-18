@@ -187,7 +187,8 @@ GameStates.makeGame = function( game, shared ) {
 
             // Player set up
             player = game.add.sprite(game.world.centerX, game.world.centerY, 'bacon');
-            player.scale.setTo(0.085, 0.085);
+            //player.scale.setTo(0.085, 0.085);
+            player.scale.setTo(0.15, 0.15);
             player.anchor.setTo(0.5,0.5);
 
             game.camera.follow(player);
