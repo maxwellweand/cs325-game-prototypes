@@ -43,7 +43,7 @@ GameStates.makePreloader = function( game ) {
             game.load.spritesheet('bacon', 'assets/bacon_anim.png', 592, 795);
 
             // Bacon bits
-            game.load.image('bacon bits', 'assets/bacon_temp2.png');
+            game.load.spritesheet('bacon bits', 'assets/baconbits_anim.png', 71, 81);
             game.load.audio('yay', 'assets/yay.ogg');
 
             // Enemies
