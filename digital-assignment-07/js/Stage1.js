@@ -11,7 +11,7 @@ GameStates.makeGame = function (game, shared) {
     var floatingPlatform;
     var movingPlatforms;
 
-    var part;
+    var newInput;
 
     var player;
 
@@ -22,7 +22,7 @@ GameStates.makeGame = function (game, shared) {
     // Boolean for currently following
     var bitsFollowing = [0, 0, 0, 0, 0, 0];
 
-    var baconPath = new Array();
+    var inputHistory = new Array();
 
     // How long until the bits follow your actions
     var baconSpacer = 12;
@@ -37,11 +37,10 @@ GameStates.makeGame = function (game, shared) {
 
     var input;
 
-    var grounded;
-    var movingGrounded;
-
-    var bitGrounded = [0, 0, 0, 0, 0, 0];
-    var bitMovingGrounded = [0, 0, 0, 0, 0, 0];
+    //var grounded;
+    //var movingGrounded;
+    //var bitGrounded = [0, 0, 0, 0, 0, 0];
+    //var bitMovingGrounded = [0, 0, 0, 0, 0, 0];
 
     var sizzle;
     var yay;
@@ -49,11 +48,11 @@ GameStates.makeGame = function (game, shared) {
 
     // Physics variables for tweaking
     var globalGravity = 500;
-    var jumpTimer = 0;
-    var jTimerBacon = [0, 0, 0, 0, 0, 0];
 
-    var dashTimer = 0;
-    var dTimerBacon = [0, 0, 0, 0, 0, 0];
+    //var jumpTimer = 0;
+    //var jTimerBacon = [0, 0, 0, 0, 0, 0];
+    //var dashTimer = 0;
+    //var dTimerBacon = [0, 0, 0, 0, 0, 0];
 
     var MOVESPEED = 175;
     var JUMPLENGTH = 600;
@@ -86,144 +85,186 @@ GameStates.makeGame = function (game, shared) {
             this.game.world.setBounds(0, 0, 3200, 600);
 
 
-            // Background elements set up
-            background = this.game.add.sprite(0, 0, 'background');
-            sun = this.game.add.sprite(game.world.centerX + 190, game.world.centerY - 300, 'sun_anim');
-            sun.animations.add('wait', [0, 1, 2], 6, true);
-            sun.play('wait');
-
-            // Platforms & ground set up
-            platforms = game.add.group();
-            platforms.enableBody = true;
-            ground = platforms.create(640, game.world.height - 48, 'ground');
-            ground.scale.setTo(4, 1.8);
-            ground.body.immovable = true;
-            ground = platforms.create(1040, game.world.height - 48, 'ground');
-            ground.scale.setTo(24, 1.8);
-            ground.body.immovable = true;
-            ground = platforms.create(2800, game.world.height - 48, 'ground');
-            ground.scale.setTo(24, 1.8);
-            ground.body.immovable = true;
-
-
-            floatingPlatform = platforms.create(400, 400, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(6, 1);
-            floatingPlatform = platforms.create(150, 100, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(2, 1);
-            floatingPlatform = platforms.create(game.world.centerX, 140, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(3, 1);
-            floatingPlatform = platforms.create(game.world.centerX - 200, 160, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(3, 1);
-            floatingPlatform = platforms.create(game.world.centerX - 400, 180, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(3, 1);
-            floatingPlatform = platforms.create(game.world.centerX - 600, 200, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(3, 1);
-            floatingPlatform = platforms.create(game.world.centerX + 600, 200, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(1, 1);
-            floatingPlatform = platforms.create(game.world.centerX + 1150, 175, 'ground');
-            floatingPlatform.body.immovable = true;
-            floatingPlatform.scale.setTo(4, 1);
-
-
-            // Set up moving platforms
-            movingPlatforms = this.game.add.group();
-            movingPlatforms.enableBody = true;
-
-            movingPlatforms.create(200, 250, 'ground');
-            movingPlatforms.children[0].body.immovable = true;
-            movingPlatforms.children[0].scale.setTo(5, 1);
-            movingPlatforms.children[0].body.velocity.x = 100;
-
-            movingPlatforms.create(game.world.centerX - 600, 350, 'ground');
-            movingPlatforms.children[1].body.immovable = true;
-            movingPlatforms.children[1].scale.setTo(3, 1);
-            movingPlatforms.children[1].body.velocity.x = 130;
-
-            movingPlatforms.create(game.world.centerX + 400, 300, 'ground');
-            movingPlatforms.children[2].body.immovable = true;
-            movingPlatforms.children[2].scale.setTo(4, 1);
-            movingPlatforms.children[2].body.velocity.x = 180;
-
-            movingPlatforms.create(game.world.centerX + 1000, 550, 'ground');
-            movingPlatforms.children[3].body.immovable = true;
-            movingPlatforms.children[3].scale.setTo(3, 1);
-            movingPlatforms.children[3].body.velocity.x = 100;
-
-
-            // Goal object
-            pan = game.add.sprite(game.world.centerX, 495, 'pan_anim');
-            pan.scale.setTo(0.4, 0.4);
-            game.physics.enable(pan, Phaser.Physics.ARCADE);
-            pan.body.immovable = true;
-            pan.animations.add('fire1', [0, 1, 2], 10, true);
-            pan.animations.add('fire2', [3, 4, 5], 10, true);
-            pan.animations.add('fire3', [6, 7, 8], 10, true);
-            sizzle = this.game.add.audio('sizzle');
-
-
-            // Bacon bits set up
-            baconBits = this.game.add.group();
-
-            for (i = 0; i < 6; i++) {
-                baconBits.create(0, 0, 'bacon bits', i);
+            /************************
+             * BACKGROUND ELEMENTS
+             ***********************/
+            {
+                background = this.game.add.sprite(0, 0, 'background');
+                sun = this.game.add.sprite(game.world.centerX + 190, game.world.centerY - 300, 'sun_anim');
+                sun.animations.add('wait', [0, 1, 2], 6, true);
+                sun.play('wait');
             }
 
-            for (i = 0; i < baconBits.children.length; i++) {
-               // baconBits.children[i].scale.setTo(0.045, 0.045);
-                baconBits.children[i].anchor.setTo(0.5, 0.5);
-                this.game.physics.enable(baconBits.children[i], Phaser.Physics.ARCADE);
-                baconBits.children[i].body.gravity.y = globalGravity;
-                baconBits.children[i].setHealth(0);
-                //baconBits.children[i].body.collideWorldBounds = true;
-                //baconBits.children[i].body.checkCollision.up = false;
-                baconBits.children[i].animations.add('wait', [0, 1], 5, true);
-                baconBits.children[i].animations.add('run', [2, 3], 8, true);
-                baconBits.children[i].play('wait');
+            /************************
+             * PLATFORMS & GROUND SET UP
+             ***********************/
+            {
+                platforms = game.add.group();
+                platforms.enableBody = true;
+                ground = platforms.create(640, game.world.height - 48, 'ground');
+                ground.scale.setTo(4, 1.8);
+                ground.body.immovable = true;
+                ground = platforms.create(1040, game.world.height - 48, 'ground');
+                ground.scale.setTo(24, 1.8);
+                ground.body.immovable = true;
+                ground = platforms.create(2800, game.world.height - 48, 'ground');
+                ground.scale.setTo(24, 1.8);
+                ground.body.immovable = true;
+
+
+                floatingPlatform = platforms.create(400, 400, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(6, 1);
+                floatingPlatform = platforms.create(150, 100, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(2, 1);
+                floatingPlatform = platforms.create(game.world.centerX, 140, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(3, 1);
+                floatingPlatform = platforms.create(game.world.centerX - 200, 160, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(3, 1);
+                floatingPlatform = platforms.create(game.world.centerX - 400, 180, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(3, 1);
+                floatingPlatform = platforms.create(game.world.centerX - 600, 200, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(3, 1);
+                floatingPlatform = platforms.create(game.world.centerX + 600, 200, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(1, 1);
+                floatingPlatform = platforms.create(game.world.centerX + 1150, 175, 'ground');
+                floatingPlatform.body.immovable = true;
+                floatingPlatform.scale.setTo(4, 1);
             }
 
-            baconBits.children[0].position.set(game.world.centerX - 150, 400);
-            baconBits.children[1].position.set(400, 20);
-            baconBits.children[2].position.set(game.world.centerX + 50, 50);
-            baconBits.children[3].position.set(150, 50);
-            baconBits.children[4].position.set(game.world.centerX + 600, 50);
-            baconBits.children[5].position.set(game.world.centerX + 1150, 50);
+            /************************
+             * MOVING PLATFORMS SET UP
+             ***********************/
+            {
+                movingPlatforms = this.game.add.group();
+                movingPlatforms.enableBody = true;
 
-            yay = this.game.add.audio('yay');
+                movingPlatforms.create(200, 250, 'ground');
+                movingPlatforms.children[0].body.immovable = true;
+                movingPlatforms.children[0].scale.setTo(5, 1);
+                movingPlatforms.children[0].body.velocity.x = 100;
 
+                movingPlatforms.create(game.world.centerX - 600, 350, 'ground');
+                movingPlatforms.children[1].body.immovable = true;
+                movingPlatforms.children[1].scale.setTo(3, 1);
+                movingPlatforms.children[1].body.velocity.x = 130;
 
+                movingPlatforms.create(game.world.centerX + 400, 300, 'ground');
+                movingPlatforms.children[2].body.immovable = true;
+                movingPlatforms.children[2].scale.setTo(4, 1);
+                movingPlatforms.children[2].body.velocity.x = 180;
 
-
-
-
-
-
-
-
-            // Player set up
-            player = game.add.sprite(game.world.centerX, game.world.centerY, 'bacon');
-            player.scale.setTo(0.17, 0.17);
-            player.anchor.setTo(0.5, 0.5);
-
-            game.camera.follow(player);
-
-            game.physics.enable(player, Phaser.Physics.ARCADE);
-            player.body.gravity.y = globalGravity;
-
-            //player.animations.add('deal with it', [1], 1, true);
-            player.animations.add('wait', [0, 1, 2], 10, true);
-            player.animations.add('runRight', [3, 4], 10, true);
-            player.animations.add('runLeft', [5, 6], 10, true);
+                movingPlatforms.create(game.world.centerX + 1000, 550, 'ground');
+                movingPlatforms.children[3].body.immovable = true;
+                movingPlatforms.children[3].scale.setTo(3, 1);
+                movingPlatforms.children[3].body.velocity.x = 100;
+            }
 
 
+            /************************
+             * GOAL OBJECT
+             ***********************/
+            {
+                pan = game.add.sprite(game.world.centerX, 495, 'pan_anim');
+                pan.scale.setTo(0.4, 0.4);
+                game.physics.enable(pan, Phaser.Physics.ARCADE);
+                pan.body.immovable = true;
+                pan.animations.add('fire1', [0, 1, 2], 10, true);
+                pan.animations.add('fire2', [3, 4, 5], 10, true);
+                pan.animations.add('fire3', [6, 7, 8], 10, true);
+                sizzle = this.game.add.audio('sizzle');
+            }
 
-            // Game input
+            /************************
+             * BACON BITS SET UP
+             ***********************/
+            {
+                baconBits = this.game.add.group();
+
+                for (i = 0; i < 6; i++) {
+                    baconBits.create(0, 0, 'bacon bits', i);
+                }
+
+                for (i = 0; i < baconBits.children.length; i++) {
+                    // baconBits.children[i].scale.setTo(0.045, 0.045);
+                    baconBits.children[i].anchor.setTo(0.5, 0.5);
+                    this.game.physics.enable(baconBits.children[i], Phaser.Physics.ARCADE);
+                    baconBits.children[i].body.gravity.y = globalGravity;
+
+                    baconBits.children[i].following = false;
+                    baconBits.children[i].grounded = false; // Static platform detection
+                    baconBits.children[i].movingGrounded = false; // Moving platform detection
+
+                    baconBits.children[i].jumpTimer = 0; // Timer for handling jumps
+                    baconBits.children[i].dashTimer = 0; // Timer for handling dash
+
+                    //baconBits.children[i].body.collideWorldBounds = true;
+                    //baconBits.children[i].body.checkCollision.up = false;
+
+                    baconBits.children[i].animations.add('wait', [0, 1], 5, true);
+                    baconBits.children[i].animations.add('run', [2, 3], 8, true);
+                    baconBits.children[i].play('wait');
+                }
+
+                // Set position of bacon bits
+                baconBits.children[0].position.set(game.world.centerX - 150, 400);
+                baconBits.children[1].position.set(400, 20);
+                baconBits.children[2].position.set(game.world.centerX + 50, 50);
+                baconBits.children[3].position.set(150, 50);
+                baconBits.children[4].position.set(game.world.centerX + 600, 50);
+                baconBits.children[5].position.set(game.world.centerX + 1150, 50);
+
+                // Collection audio
+                yay = this.game.add.audio('yay');
+            }
+
+            /************************
+             *  PLAYER SET UP
+             ***********************/
+            {
+                player = game.add.sprite(game.world.centerX, game.world.centerY, 'bacon');
+                player.scale.setTo(0.17, 0.17);
+                player.anchor.setTo(0.5, 0.5);
+
+                game.camera.follow(player);
+
+                game.physics.enable(player, Phaser.Physics.ARCADE);
+                player.body.gravity.y = globalGravity;
+
+                player.grounded = false; // Static platform detection
+                player.movingGrounded = false; // Moving platform detection
+
+                player.jumpTimer = 0; // Timer for handling jumps
+                player.dashTimer = 0; // Timer for handling dash
+                player.throwTimer = 0; // Timer for handling throws
+
+
+                //player.animations.add('deal with it', [1], 1, true);
+                player.animations.add('wait', [0, 1, 2], 10, true);
+                player.animations.add('runRight', [3, 4], 10, true);
+                player.animations.add('runLeft', [5, 6], 10, true);
+            }
+
+            /************************
+             *  CLOCK SET UP
+             ***********************/
+            {
+                var style = {font: "28px Verdana", fill: "#ff476f", align: "center"};
+                timeText = game.add.text(game.world.centerX, 15, "Collect All Your Friends!", style);
+                timeText.anchor.setTo(0.5, 0.0);
+                time = game.time.now;
+            }
+
+
+            /************************
+             *  GAME INPUT
+             ***********************/
             input = game.input.keyboard.addKeys({
                 'up': Phaser.KeyCode.UP,
                 'down': Phaser.KeyCode.DOWN,
@@ -235,108 +276,90 @@ GameStates.makeGame = function (game, shared) {
             });
 
 
-
-            // Follower mechanics
+            /*********************************
+             *  Populate input history array
+             *********************************/
             for (i = 0; i <= baconBits.children.length * baconSpacer; i++) {
-                //baconPath[i] = new Phaser.Point(player.x, player.y);
-                baconPath[i] = input;
+                inputHistory[i] = input;
             }
-
-
-            // Clock set up
-            var style = {font: "28px Verdana", fill: "#ff476f", align: "center"};
-            timeText = game.add.text(game.world.centerX, 15, "Collect All Your Friends!", style);
-            timeText.anchor.setTo(0.5, 0.0);
-            time = game.time.now;
-
-
-
 
 
         },
 
         update: function () {
 
-            timeLeft = 99999 - (game.time.now - time);
-            timeText.text = "Time remaining: " + timeLeft;
+            /*************************
+             * COLLISION BLOCK
+             *************************/
+            {
+                // Platform collision
+                player.grounded = game.physics.arcade.collide(player, platforms);
+                player.movingGrounded = game.physics.arcade.collide(player, movingPlatforms);
+
+                // Moving plat collision
+                for (i = 0; i < baconBits.children.length; i++) {
+                    baconBits.children[i].grounded = game.physics.arcade.collide(baconBits.children[i], platforms);
+                    baconBits.children[i].MovingGrounded = game.physics.arcade.collide(baconBits.children[i], movingPlatforms);
+                }
 
 
-            // Platform collision
-            grounded = game.physics.arcade.collide(player, platforms);
+                // Goal collision
+                game.physics.arcade.collide(baconBits, pan, cookBacon);
 
-            for (i = 0; i < baconBits.children.length; i++) {
-                bitGrounded[i] = game.physics.arcade.collide(baconBits.children[i], platforms);
+                if (timeLeft < 99990) {
+
+                    // Overlap detection for picking up followers
+                    for (i = 0; i < baconBits.children.length; i++) {
+                        if (checkOverlap(player, baconBits.children[i])) {
+                            activateFollower(player, baconBits.children[i]);
+                        }
+                    }
+                } else {
+                    for (i = 0; i < baconBits.children.length; i++) {
+                        baconBits.children[i].following = false;
+                    }
+                }
+
             }
 
+            /*************************
+             * MOVEMENT UPDATE BLOCK
+             *************************/
 
-            // Moving plat collision
-            movingGrounded = game.physics.arcade.collide(player, movingPlatforms);
+            // Player movement with current input state
+            unitMovement(player, input);
 
-            for (i = 0; i < baconBits.children.length; i++) {
-                bitMovingGrounded[i] = game.physics.arcade.collide(baconBits.children[i], movingPlatforms);
+            // Separate block for throwing bacon bits
+            if (input.throw.isDown && (player.dashTimer != 0)) {
+
             }
 
-            // Goal collision
-            game.physics.arcade.collide(baconBits, pan, cookBacon);
+            // Throw away oldest input & queue newest input
+            inputHistory.pop();
+            newInput = input;
+            inputHistory.unshift(newInput);
 
 
-            // Overlap detection for picking up followers
-            for (i = 0; i < baconBits.children.length; i++) {
-                if (checkOverlap(player, baconBits.children[i])) {
-                    activateFollower(player, baconBits.children[i]);
+            if (timeLeft < 999990) {
+                for (i = 0; i < baconBits.children.length; i++) {
+                    if (baconBits.children[i].following == true) {
+                        unitMovement(baconBits.children[i], inputHistory[(i + 1) * baconSpacer]);
+                    }
                 }
             }
 
 
-            // Movement & follower update chain
-            playerMovement(player, input);
+            /*************************
+             * STAGE UPDATE BLOCK
+             *************************/
+
+            platformCycleUpdate();
 
 
-            // Platform cycles
-            if (movingPlatforms.children[0].x < 0) {
-                movingPlatforms.children[0].body.velocity.x = 100;
-            } else if (movingPlatforms.children[0].x > 600) {
-                movingPlatforms.children[0].body.velocity.x = -100;
-            }
+            /*************************
+             * COMPLETION CHECKS
+             *************************/
 
-            if (movingPlatforms.children[1].x < game.world.centerX - 960) {
-                movingPlatforms.children[1].body.velocity.x = 130;
-            } else if (movingPlatforms.children[1].x > game.world.centerX + 50) {
-                movingPlatforms.children[1].body.velocity.x = -130;
-            }
-
-            if (movingPlatforms.children[2].x < game.world.centerX + 250) {
-                movingPlatforms.children[2].body.velocity.x = 180;
-            } else if (movingPlatforms.children[2].x > game.world.centerX + 950) {
-                movingPlatforms.children[2].body.velocity.x = -180;
-            }
-
-            if (movingPlatforms.children[3].x < game.world.centerX + 250) {
-                movingPlatforms.children[3].body.velocity.x = 100;
-            } else if (movingPlatforms.children[3].x > game.world.centerX + 1000) {
-                movingPlatforms.children[3].body.velocity.x = -100;
-            }
-
-
-            // Update follower chain
-            /*
-                        if (player.velocity != 0){
-                            var part = baconPath.pop();
-                            part.setTo(player.x, player.y);
-                            baconPath.unshift(part);
-
-                            for (i = 0; i < baconBits.children.length; i++) {
-                                if (baconBits.children[i].health >= 2){
-                                    baconBits.children[i].x = (baconPath[(i+1) * baconSpacer]).x;
-                                    //if (!grounded){
-                                        baconBits.children[i].y = (baconPath[(i+1) * baconSpacer]).y +18;
-                                    //}
-
-                                }
-
-                            }
-                        }
-            */
 
             // Victory check
             if (returnedBits == baconBits.children.length) {
@@ -359,6 +382,10 @@ GameStates.makeGame = function (game, shared) {
                 }, this);
                 returnedBits = 0;
                 sizzle.stop();
+            } else {
+                // Update time counter
+                timeLeft = 99999 - (game.time.now - time);
+                timeText.text = "Time remaining: " + timeLeft;
             }
 
 
@@ -375,13 +402,13 @@ GameStates.makeGame = function (game, shared) {
         },
 
         render: function () {
-
+            // Nothing for now
         }
 
     };
 
     // Handles keyboard input mapping for movement
-    function playerMovement(player, playerInput) {
+    function unitMovement(player, playerInput) {
         if (playerInput.left.isDown) {
             // Move the player left
             player.body.velocity.x = -(MOVESPEED);
@@ -400,96 +427,64 @@ GameStates.makeGame = function (game, shared) {
         }
 
         // Jumping
-        if (playerInput.up.isDown && (grounded || movingGrounded) && (player.body.velocity.y == 0)) {
-            jumpTimer = game.time.now + JUMPLENGTH;
+        if (playerInput.up.isDown && (player.grounded || player.movingGrounded) && (player.body.velocity.y == 0)) {
+            player.jumpTimer = game.time.now + JUMPLENGTH;
             player.body.velocity.y = -(JUMPVELOCITY);
-        } else if (playerInput.up.isDown && (jumpTimer != 0)) {
-            if (jumpTimer > game.time.now) {
-                jumpTimer = 0;
+        } else if (playerInput.up.isDown && (player.jumpTimer != 0)) {
+            if (player.jumpTimer > game.time.now) {
+                player.jumpTimer = 0;
             } else {
                 player.body.velocity = -(JUMPVELOCITY);
             }
-        } else if (jumpTimer != 0) {
-            jumpTimer = 0;
+        } else if (player.jumpTimer != 0) {
+            player.jumpTimer = 0;
         }
 
 
         // Dashing
-        if (playerInput.dash.isDown && dashTimer == 0) {
-            dashTimer = game.time.now + DASHLENGTH;
+        if (playerInput.dash.isDown && player.dashTimer == 0) {
+            player.dashTimer = game.time.now + DASHLENGTH;
             player.body.velocity.x = -(DASHVELOCITY);
-        } else if (playerInput.up.isDown && (dashTimer != 0)) {
-            if (dashTimer > game.time.now) {
-                dashTimer = 0;
+        } else if (playerInput.up.isDown && (player.dashTimer != 0)) {
+            if (player.dashTimer > game.time.now) {
+                player.dashTimer = 0;
             } else {
                 player.body.velocity = -(DASHVELOCITY);
             }
-        } else if (dashTimer != 0) {
-            dashTimer = 0;
-        }
-
-
-        // Throwing
-
-
-        // Adding inputs to queue for followers
-        /*
-            'up': Phaser.KeyCode.UP,
-            'down': Phaser.KeyCode.DOWN,
-            'left': Phaser.KeyCode.LEFT,
-            'right': Phaser.KeyCode.RIGHT,
-            'jump': Phaser.KeyCode.SPACEBAR,
-            'dash': Phaser.KeyCode.Q,
-            'throw': Phaser.KeyCode.E,
-        */
-
-        part = baconPath.pop();
-        part = playerInput;
-        baconPath.unshift(part);
-
-        for (i = 0; i < baconBits.children.length; i++) {
-            if (baconBits.children[i].health >= 2) {
-                followerInputChain(baconBits.children[i], baconPath[(i + 1) * baconSpacer], i);
-            }
+        } else if (player.dashTimer != 0) {
+            player.dashTimer = 0;
         }
 
 
     }
 
 
-    function followerInputChain(baconBit, playerInput, i) {
+    // Updates positions of moving platforms
+    function platformCycleUpdate() {
 
-        if (playerInput.left.isDown) {
-            // Move the player left
-            baconBit.body.velocity.x = -(MOVESPEED);
-            baconBit.play('run');
-
-        } else if (playerInput.right.isDown) {
-            // Move the player right
-            baconBit.body.velocity.x = MOVESPEED;
-            player.play('run');
-
-        } else {
-            // Decay velocity until standstill
-            baconBit.body.velocity.x = baconBit.body.velocity.x / SKIDRATE;
-            player.play('wait');
-
+        if (movingPlatforms.children[0].x < 0) {
+            movingPlatforms.children[0].body.velocity.x = 100;
+        } else if (movingPlatforms.children[0].x > 600) {
+            movingPlatforms.children[0].body.velocity.x = -100;
         }
 
-        // Jumping
-        if (playerInput.up.isDown && (bitGrounded || bitMovingGrounded) && (baconBit.body.velocity.y == 0)) {
-            jumpTimer = game.time.now + JUMPLENGTH;
-            baconBit.body.velocity.y = -(JUMPVELOCITY);
-        } else if (playerInput.up.isDown && (jTimerBacon[i] != 0)) {
-            if (jumpTimer > game.time.now) {
-                jumpTimer = 0;
-            } else {
-                baconBit.body.velocity = -(JUMPVELOCITY);
-            }
-        } else if (jTimerBacon[i] != 0) {
-            jumpTimer = 0;
+        if (movingPlatforms.children[1].x < game.world.centerX - 960) {
+            movingPlatforms.children[1].body.velocity.x = 130;
+        } else if (movingPlatforms.children[1].x > game.world.centerX + 50) {
+            movingPlatforms.children[1].body.velocity.x = -130;
         }
 
+        if (movingPlatforms.children[2].x < game.world.centerX + 250) {
+            movingPlatforms.children[2].body.velocity.x = 180;
+        } else if (movingPlatforms.children[2].x > game.world.centerX + 950) {
+            movingPlatforms.children[2].body.velocity.x = -180;
+        }
+
+        if (movingPlatforms.children[3].x < game.world.centerX + 250) {
+            movingPlatforms.children[3].body.velocity.x = 100;
+        } else if (movingPlatforms.children[3].x > game.world.centerX + 1000) {
+            movingPlatforms.children[3].body.velocity.x = -100;
+        }
     }
 
     function checkOverlap(spriteA, spriteB) {
@@ -501,21 +496,15 @@ GameStates.makeGame = function (game, shared) {
     }
 
     function activateFollower(player, baconBit) {
-        // Increase health (used for completion tracking)
-        if (baconBit.health <= 1) {
-            baconBit.health += 1;
+        if (baconBit.following == false) {
+            baconBit.following = true;
 
-            //baconBit.body.x = player.body.x;
-            //baconBit.body.y = player.body.y;
-
-            if (timeLeft < 99990) {
-                yay.play();
-            }
+            yay.play();
         }
     }
 
     function cookBacon(thepan, baconBit) {
-        baconBit.health = 0;
+        baconBit.following = false;
         baconBit.kill();
         returnedBits += 1;
 
