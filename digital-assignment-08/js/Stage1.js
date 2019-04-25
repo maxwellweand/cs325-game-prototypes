@@ -440,10 +440,7 @@ GameStates.makeGame = function (game, shared) {
 
         render: function () {
 
-            game.debug.body(player);
-            game.debug.body(pan);
 
-            game.debug.body(baconBits.children[0]);
 
         }
 
