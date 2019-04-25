@@ -14,7 +14,9 @@ window.onload = function() {
 	game.state.add( 'Preloader', GameStates.makePreloader( game ) );
 	game.state.add( 'MainMenu', GameStates.makeMainMenu( game, shared ) );
 	game.state.add( 'Stage1', GameStates.makeGame( game, shared ) );
-	// Other stages will be inserted here.
+	game.state.add( 'Stage2', GameStates.makeGame2( game, shared ) );
+	//Other stages will be inserted here.
+
 
 	//	Now start the Boot state.
 	game.state.start('Boot');

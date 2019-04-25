@@ -34,7 +34,8 @@ GameStates.makePreloader = function( game ) {
             game.load.audio('beats', 'assets/popper beats.ogg');
 
             // Map background
-            game.load.image('background', 'assets/skybox.png');
+            game.load.image('background1', 'assets/skybox.png');
+            game.load.image('background2', 'assets/skybox2.jpg');
             game.load.spritesheet('sun_anim', 'assets/sun_anim.png', 222, 198);
             game.load.image('ground', 'assets/plattile_basic.png');
 

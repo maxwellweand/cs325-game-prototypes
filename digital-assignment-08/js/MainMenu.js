@@ -9,7 +9,7 @@ GameStates.makeMainMenu = function( game, shared ) {
     
     function startGame(pointer) {
 
-        // TODO: Unmute the second track and don't stop the first track.
+
         beats.mute = false;
 
 
