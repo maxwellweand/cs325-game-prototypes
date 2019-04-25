@@ -11,7 +11,18 @@ GameStates.makeGame = function (game, shared) {
     var floatingPlatform;
     var movingPlatforms;
 
-    var newInput;
+    // Truth values of input isDown
+    var inputArray = [false, false, false, false, false, false, false];
+    var newInput = [false, false, false, false, false, false, false];
+
+    var frameTimer;
+
+    var jumpReference;
+
+
+    var baconPath = new Array();
+
+    var stageComplete = false;
 
     var player;
 
@@ -229,7 +240,7 @@ GameStates.makeGame = function (game, shared) {
              ***********************/
             {
                 player = game.add.sprite(game.world.centerX, game.world.centerY, 'bacon');
-                player.scale.setTo(0.17, 0.17);
+                player.scale.setTo(0.8, 0.8);
                 player.anchor.setTo(0.5, 0.5);
 
                 game.camera.follow(player);
@@ -249,6 +260,8 @@ GameStates.makeGame = function (game, shared) {
                 player.animations.add('wait', [0, 1, 2], 10, true);
                 player.animations.add('runRight', [3, 4], 10, true);
                 player.animations.add('runLeft', [5, 6], 10, true);
+                jumpReference = player.animations.add('jump', [7, 8, 9, 10, 11, 12], 10, false);
+                player.animations.add('falling', [11, 12], 10, true);
             }
 
             /************************
@@ -266,13 +279,13 @@ GameStates.makeGame = function (game, shared) {
              *  GAME INPUT
              ***********************/
             input = game.input.keyboard.addKeys({
-                'up': Phaser.KeyCode.UP,
-                'down': Phaser.KeyCode.DOWN,
-                'left': Phaser.KeyCode.LEFT,
-                'right': Phaser.KeyCode.RIGHT,
-                'jump': Phaser.KeyCode.SPACEBAR,
-                'dash': Phaser.KeyCode.Q,
-                'throw': Phaser.KeyCode.E,
+                'up': Phaser.KeyCode.UP, // 0
+                'down': Phaser.KeyCode.DOWN, // 1
+                'left': Phaser.KeyCode.LEFT, // 2
+                'right': Phaser.KeyCode.RIGHT, // 3
+                'jump': Phaser.KeyCode.SPACEBAR, // 4
+                'dash': Phaser.KeyCode.Q, // 5
+                'throw': Phaser.KeyCode.E, // 6
             });
 
 
@@ -280,7 +293,8 @@ GameStates.makeGame = function (game, shared) {
              *  Populate input history array
              *********************************/
             for (i = 0; i <= baconBits.children.length * baconSpacer; i++) {
-                inputHistory[i] = input;
+                //inputHistory[i] = inputArray;
+                baconPath[i] = new Phaser.Point(player.x, player.y);
             }
 
 
@@ -326,24 +340,40 @@ GameStates.makeGame = function (game, shared) {
              * MOVEMENT UPDATE BLOCK
              *************************/
 
+            // Update input array with current input values
+            updateInputArray(input);
+
             // Player movement with current input state
-            unitMovement(player, input);
+            unitMovement(player, inputArray);
 
             // Separate block for throwing bacon bits
             if (input.throw.isDown && (player.dashTimer != 0)) {
 
             }
 
-            // Throw away oldest input & queue newest input
-            inputHistory.pop();
-            newInput = input;
-            inputHistory.unshift(newInput);
+            /*
+                        // Throw away oldest input
+                        inputHistory.pop();
+                        // Clone current input to new input
+                        for (i = 0; i < inputArray.length; i++) {
+                            newInput[i] = inputArray[i];
+                        }
+                        // Queue new input
+                        inputHistory.unshift(newInput);
+            */
 
+
+            // Hotfix janky follower alg
+            var part = baconPath.pop();
+            part.setTo(player.x, player.y);
+            baconPath.unshift(part);
 
             if (timeLeft < 999990) {
                 for (i = 0; i < baconBits.children.length; i++) {
                     if (baconBits.children[i].following == true) {
-                        unitMovement(baconBits.children[i], inputHistory[(i + 1) * baconSpacer]);
+                        // unitMovement(baconBits.children[i], inputHistory[(i + 1) * baconSpacer]);
+                        baconBits.children[i].x = (baconPath[(i + 1) * baconSpacer]).x;
+                        baconBits.children[i].y = (baconPath[(i + 1) * baconSpacer]).y + 18;
                     }
                 }
             }
@@ -366,6 +396,7 @@ GameStates.makeGame = function (game, shared) {
                 sun.scale.setTo(3, 3);
                 sun.x -= 1
                 //player.play('deal with it');
+                stageComplete = true;
                 timeText.text = "Sizzle sizzle! More levels in the future.\nClick on Bacon to return."
                 player.inputEnabled = true;
                 player.events.onInputDown.add(function () {
@@ -374,15 +405,17 @@ GameStates.makeGame = function (game, shared) {
             }
 
             // Time failure check
-            if ((timeLeft <= 0) && (returnedBits < baconBits.children.length)) {
+            if ((timeLeft <= 0) && (!stageComplete)) {
                 timeText.text = "Out of time!\nClick on Bacon to return.";
                 player.inputEnabled = true;
                 player.events.onInputDown.add(function () {
                     quitGame();
                 }, this);
+                player.x = game.world.centerX;
+                player.y = game.world.centerY;
                 returnedBits = 0;
                 sizzle.stop();
-            } else {
+            } else if (!stageComplete){
                 // Update time counter
                 timeLeft = 99999 - (game.time.now - time);
                 timeText.text = "Time remaining: " + timeLeft;
@@ -409,28 +442,37 @@ GameStates.makeGame = function (game, shared) {
 
     // Handles keyboard input mapping for movement
     function unitMovement(player, playerInput) {
-        if (playerInput.left.isDown) {
+
+        if (playerInput[2]) { // If input.left.isDown
             // Move the player left
             player.body.velocity.x = -(MOVESPEED);
-            player.play('runLeft');
+            if ((player.grounded || player.movingGrounded)) {
+                player.play('runLeft');
+            }
 
-        } else if (playerInput.right.isDown) {
+
+        } else if (playerInput[3]) { // If input.right.isDown
             // Move the player right
             player.body.velocity.x = MOVESPEED;
-            player.play('runRight');
+            if ((player.grounded || player.movingGrounded)) {
+                player.play('runRight');
+            }
 
         } else {
             // Decay velocity until standstill
             player.body.velocity.x = player.body.velocity.x / SKIDRATE;
-            player.play('wait');
-
+            if ((player.grounded || player.movingGrounded)) {
+                player.play('wait');
+            }
         }
 
+
         // Jumping
-        if (playerInput.up.isDown && (player.grounded || player.movingGrounded) && (player.body.velocity.y == 0)) {
+        if (playerInput[0] && (player.grounded || player.movingGrounded) && (player.body.velocity.y == 0)) { // If input.up.isDown
             player.jumpTimer = game.time.now + JUMPLENGTH;
             player.body.velocity.y = -(JUMPVELOCITY);
-        } else if (playerInput.up.isDown && (player.jumpTimer != 0)) {
+            player.play('jump');
+        } else if (playerInput[0] && (player.jumpTimer != 0)) { // If input.up.isDown
             if (player.jumpTimer > game.time.now) {
                 player.jumpTimer = 0;
             } else {
@@ -440,12 +482,18 @@ GameStates.makeGame = function (game, shared) {
             player.jumpTimer = 0;
         }
 
+        // Play falling animation
+        if (!(player.grounded || player.movingGrounded)) {
+            if (!jumpReference.isPlaying){
+                player.play('falling');
+            }
+        }
 
         // Dashing
-        if (playerInput.dash.isDown && player.dashTimer == 0) {
+        if (playerInput[5] && player.dashTimer == 0) { // If input.dash.isDown
             player.dashTimer = game.time.now + DASHLENGTH;
             player.body.velocity.x = -(DASHVELOCITY);
-        } else if (playerInput.up.isDown && (player.dashTimer != 0)) {
+        } else if (playerInput[5] && (player.dashTimer != 0)) { // If input.dash.isDown
             if (player.dashTimer > game.time.now) {
                 player.dashTimer = 0;
             } else {
@@ -458,8 +506,52 @@ GameStates.makeGame = function (game, shared) {
 
     }
 
+// Update input array with current input values
+    function updateInputArray(input) {
+        if (input.up.isDown) {
+            inputArray[0] = true;
+        } else {
+            inputArray[0] = false;
+        }
 
-    // Updates positions of moving platforms
+        if (input.down.isDown) {
+            inputArray[1] = true;
+        } else {
+            inputArray[1] = false;
+        }
+
+        if (input.left.isDown) {
+            inputArray[2] = true;
+        } else {
+            inputArray[2] = false;
+        }
+
+        if (input.right.isDown) {
+            inputArray[3] = true;
+        } else {
+            inputArray[3] = false;
+        }
+
+        if (input.jump.isDown) {
+            inputArray[4] = true;
+        } else {
+            inputArray[4] = false;
+        }
+
+        if (input.dash.isDown) {
+            inputArray[5] = true;
+        } else {
+            inputArray[5] = false;
+        }
+
+        if (input.throw.isDown) {
+            inputArray[6] = true;
+        } else {
+            inputArray[6] = false;
+        }
+    }
+
+// Updates positions of moving platforms
     function platformCycleUpdate() {
 
         if (movingPlatforms.children[0].x < 0) {
@@ -514,10 +606,11 @@ GameStates.makeGame = function (game, shared) {
             thepan.play('fire2');
         } else if (returnedBits > 0) {
             thepan.play('fire1');
-            sizzle.play();
         }
 
+        sizzle.play();
 
     }
 
-};
+}
+;

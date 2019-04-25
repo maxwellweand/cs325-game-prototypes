@@ -40,7 +40,7 @@ GameStates.makePreloader = function( game ) {
 
 
             // Player
-            game.load.spritesheet('bacon', 'assets/bacon_anim.png', 592, 795);
+            game.load.spritesheet('bacon', 'assets/bacon_anim.png', 118, 176);
 
             // Bacon bits
             game.load.spritesheet('bacon bits', 'assets/baconbits_anim.png', 71, 81);
