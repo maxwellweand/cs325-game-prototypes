@@ -186,6 +186,7 @@ GameStates.makeGame = function (game, shared) {
                 pan.scale.setTo(0.4, 0.4);
                 game.physics.enable(pan, Phaser.Physics.ARCADE);
                 pan.body.immovable = true;
+                pan.body.setSize(400, 150, 32, 48);
                 pan.animations.add('fire1', [0, 1, 2], 10, true);
                 pan.animations.add('fire2', [3, 4, 5], 10, true);
                 pan.animations.add('fire3', [6, 7, 8], 10, true);
@@ -243,6 +244,8 @@ GameStates.makeGame = function (game, shared) {
                 player.scale.setTo(0.8, 0.8);
                 player.anchor.setTo(0.5, 0.5);
 
+
+
                 game.camera.follow(player);
 
                 game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -255,6 +258,8 @@ GameStates.makeGame = function (game, shared) {
                 player.dashTimer = 0; // Timer for handling dash
                 player.throwTimer = 0; // Timer for handling throws
 
+
+                player.body.setSize( 118, 166);
 
                 //player.animations.add('deal with it', [1], 1, true);
                 player.animations.add('wait', [0, 1, 2], 10, true);
@@ -385,7 +390,6 @@ GameStates.makeGame = function (game, shared) {
 
             platformCycleUpdate();
 
-
             /*************************
              * COMPLETION CHECKS
              *************************/
@@ -435,7 +439,12 @@ GameStates.makeGame = function (game, shared) {
         },
 
         render: function () {
-            // Nothing for now
+
+            game.debug.body(player);
+            game.debug.body(pan);
+
+            game.debug.body(baconBits.children[0]);
+
         }
 
     };
