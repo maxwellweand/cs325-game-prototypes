@@ -410,7 +410,7 @@ GameStates.makeGame = function (game, shared) {
 
 
             // Death check
-            /*
+
                if (player.y > (game.height + 100)) {
                    returnedBits = 0;
                    timeText.text = "Game Over!";
@@ -419,7 +419,7 @@ GameStates.makeGame = function (game, shared) {
                    this.state.start('Stage1');
 
                }
-   */
+
         },
 
         render: function () {

@@ -578,7 +578,7 @@ GameStates.makeGame2 = function (game, shared) {
                     timeText.text = "Time remaining: " + timeLeft;
                 }
 
-                /*
+/*
                             // Death check
                             if (player.y > (game.height + 100)) {
                                 returnedBits = 0;
@@ -588,7 +588,7 @@ GameStates.makeGame2 = function (game, shared) {
                                 this.state.start('Stage2');
 
                             }
-                */
+*/
             }
         },
 

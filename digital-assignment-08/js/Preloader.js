@@ -30,8 +30,10 @@ GameStates.makePreloader = function( game ) {
 
 
             // BGM
+            game.load.audio('lead', 'assets/popper lead.ogg');
             game.load.audio('melody', 'assets/popper melody.ogg');
             game.load.audio('beats', 'assets/popper beats.ogg');
+            game.load.audio('killedMelody', 'assets/killed trumpet.ogg');
 
             // Map background
             game.load.image('background1', 'assets/skybox.png');

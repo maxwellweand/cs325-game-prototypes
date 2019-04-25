@@ -2,14 +2,18 @@
 
 GameStates.makeMainMenu = function( game, shared ) {
 
+    var lead = null;
 	var melody = null;
 	var beats = null;
+	var killedMelody = null;
 	var BGM;
 	var playButton = null;
     
     function startGame(pointer) {
 
 
+        lead.mute = true;
+        killedMelody.mute = false;
         beats.mute = false;
 
 
@@ -27,15 +31,25 @@ GameStates.makeMainMenu = function( game, shared ) {
             //	Here all we're doing is playing some music and adding a picture and button
             //	Naturally I expect you to do something significantly better :)
     
+            lead = game.add.audio('lead');
             melody = game.add.audio('melody');
             beats = game.add.audio('beats');
+            killedMelody = game.add.audio('killedMelody');
+
+            lead.stop();
             melody.stop();
             beats.stop();
-            melody.play();
-            BGM = [ melody, beats];
+            killedMelody.stop();
+
+            lead.play();
+
+            BGM = [ lead, melody, beats, killedMelody];
             game.sound.setDecodedCallback(BGM, startMusic, this);
-            melody.mute = false;
+
+            lead.mute = false;
+            melody.mute = true;
             beats.mute = true;
+            killedMelody.mute = true;
 
 
             game.add.sprite(0, 0, 'titlePage');
@@ -54,7 +68,9 @@ GameStates.makeMainMenu = function( game, shared ) {
     };
 
     function startMusic(){
+        lead.loopFull(1);
         melody.loopFull(1);
-        beats.loopFull(.8);
+        beats.loopFull(.7);
+        killedMelody.loopFull(1);
     }
 };
